@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Paulo Affonso — Desenvolvedor Full Stack | PHP e Laravel</title>
+    <meta
+      name="description"
+      content="Desenvolvedor full stack e analista de sistemas. Construo sistemas de gestão sob medida em PHP e Laravel, de requisitos e BPMN à entrega. Nova Friburgo, RJ."
+    />
+
+    <link rel="canonical" href="https://affonso.dev/" />
+    <link rel="alternate" hreflang="pt-BR" href="https://affonso.dev/" />
+    <link rel="alternate" hreflang="en" href="https://affonso.dev/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://affonso.dev/" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:url" content="https://affonso.dev/" />
+    <meta property="og:site_name" content="Paulo Affonso" />
+    <meta property="og:title" content="Paulo Affonso — Desenvolvedor Full Stack" />
+    <meta
+      property="og:description"
+      content="Sistemas de gestão sob medida em PHP e Laravel, de requisitos e BPMN à entrega."
+    />
+    <meta property="og:image" content="https://affonso.dev/assets/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Paulo Affonso, desenvolvedor full stack" />
+    <meta property="profile:first_name" content="Paulo" />
+    <meta property="profile:last_name" content="Affonso" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@affonsopaulo_" />
+
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0D0D0D" />
+
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="assets/fonts/ibm-plex-sans-latin-400-normal.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="assets/fonts/ibm-plex-sans-latin-600-normal.woff2"
+    />
+
+    <link rel="stylesheet" href="assets/css/variables.css" />
+    <link rel="stylesheet" href="assets/css/reset.css" />
+    <link rel="stylesheet" href="assets/css/typography.css" />
+    <link rel="stylesheet" href="assets/css/layout.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="site-header">
+      <div class="container">
+        <p class="site-brand">paulo affonso</p>
+        <nav class="site-nav" aria-label="Principal">
+          <a class="site-nav__link" href="#projetos">projetos</a>
+          <a class="site-nav__link" href="#experiencia">experiência</a>
+          <a class="site-nav__link hide-on-small" href="#formacao">formação</a>
+          <a class="site-nav__link" href="#contato">contato</a>
+          <a class="site-nav__link site-nav__link--resume" href="cv.pdf">curriculo.pdf</a>
+          <span class="lang-switch"
+            ><b class="lang-switch__current">pt</b> /
+            <a class="lang-switch__link" href="en/" hreflang="en" lang="en">en</a></span
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main id="conteudo">
+      <div class="hero">
+        <div class="container">
+          <div>
+            <p class="hero__context">
+              <span>graduando em sistemas de informação · cefet/rj</span>
+              <span class="hero__separator" aria-hidden="true">/</span>
+              <span>nova friburgo, rj</span>
+            </p>
+            <h1 class="hero__name">Paulo Affonso</h1>
+            <p class="hero__role">Desenvolvedor Full Stack e Analista de Sistemas</p>
+            <p class="hero__bio">
+              Construo sistemas de gestão, do banco de dados à interface. CRM e ERP sob medida na
+              Brulve, e dois anos no WeGIA, software livre usado por instituições do terceiro setor.
+              Publico pacotes open source no Packagist e no GitHub.
+            </p>
+            <div class="hero__actions">
+              <a class="button" href="https://github.com/AffonsoPaulo" rel="me noopener"
+                >github.com/AffonsoPaulo</a
+              >
+              <a class="button" href="https://www.linkedin.com/in/paulo-affonso/" rel="me noopener"
+                >linkedin.com/in/paulo-affonso</a
+              >
+              <a class="button button--primary" href="cv.pdf">currículo em PDF</a>
+            </div>
+          </div>
+          <div class="hero__portrait">
+            <picture>
+              <source srcset="assets/paulo-affonso.webp" type="image/webp" />
+              <img
+                src="assets/paulo-affonso.jpg"
+                width="560"
+                height="747"
+                alt="Paulo Affonso"
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <section class="skills" aria-labelledby="heading-skills">
+        <div class="container">
+          <p class="skills__label"><b id="heading-skills">stack</b></p>
+          <ul class="chip-list">
+            <li class="chip--primary">php</li>
+            <li class="chip--primary">laravel</li>
+            <li class="chip--primary">mysql</li>
+            <li class="chip--primary">javascript</li>
+            <li>html5</li>
+            <li>css</li>
+            <li>bootstrap 5</li>
+            <li>uikit</li>
+            <li>git</li>
+            <li>gitlab</li>
+            <li>scrum</li>
+            <li>kanban</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="projetos" aria-labelledby="heading-projects">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-header__number" aria-hidden="true">01</span>
+            <h2 id="heading-projects">projetos</h2>
+            <span class="section-header__rule" aria-hidden="true"></span>
+            <span class="section-header__note">papel · stack · link</span>
+          </div>
+          <ul class="project-list">
+            <li class="project">
+              <article class="project__layout">
+                <div>
+                  <h3 class="project__name">
+                    <a href="https://packagist.org/packages/affonsopaulo/manual" rel="noopener"
+                      >Manual</a
+                    >
+                  </h3>
+                  <p class="project__role">autor</p>
+                  <p class="project__kind">pacote laravel · mit</p>
+                </div>
+                <p class="project__summary">
+                  Pacote que gera um site de documentação a partir de arquivos Markdown. Rotas,
+                  navegação, breadcrumbs e busca são derivados da estrutura de pastas, sem build
+                  step, sem Node e sem banco de dados. Instalável via Composer.
+                </p>
+                <p class="project__meta">
+                  <span class="project__tech">PHP · Laravel · Composer</span>
+                  <a href="https://packagist.org/packages/affonsopaulo/manual" rel="noopener"
+                    >packagist.org/affonsopaulo/manual ↗</a
+                  >
+                  <a href="https://github.com/AffonsoPaulo/manual" rel="noopener"
+                    >github.com/AffonsoPaulo/manual ↗</a
+                  >
+                </p>
+              </article>
+            </li>
+
+            <li class="project">
+              <article class="project__layout">
+                <div>
+                  <h3 class="project__name">
+                    <a href="https://github.com/AffonsoPaulo/software-architect" rel="noopener"
+                      >software-architect</a
+                    >
+                  </h3>
+                  <p class="project__role">autor</p>
+                  <p class="project__kind">open source · mit</p>
+                </div>
+                <p class="project__summary">
+                  Skill para agentes de código como Claude Code e Cursor. Conduz o planejamento de
+                  um projeto em 18 fases e gera a documentação de requisitos, arquitetura, segurança
+                  e testes, com rastreabilidade por ID validada por script.
+                </p>
+                <p class="project__meta">
+                  <span class="project__tech">JavaScript · Markdown</span>
+                  <a href="https://github.com/AffonsoPaulo/software-architect" rel="noopener"
+                    >github.com/AffonsoPaulo/software-architect ↗</a
+                  >
+                </p>
+              </article>
+            </li>
+
+            <li class="project">
+              <article class="project__layout">
+                <div>
+                  <h3 class="project__name">
+                    <a href="https://github.com/LabRedesCefetRJ/WeGIA" rel="noopener">WeGIA</a>
+                  </h3>
+                  <p class="project__role">refatoração · requisitos</p>
+                  <p class="project__kind">software livre · cefet/rj</p>
+                </div>
+                <p class="project__summary">
+                  Software livre de gestão para instituições do terceiro setor, mantido pela
+                  extensão universitária do Cefet/RJ.
+                  <b>Minha atuação:</b>
+                  refatoração do sistema para Laravel, levantamento da documentação e reuniões com
+                  usuários potenciais para mapear requisitos.
+                </p>
+                <p class="project__meta">
+                  <span class="project__tech">PHP · MySQL</span>
+                  <a href="https://demo.wegia.org/" rel="noopener">demo.wegia.org ↗</a>
+                  <a href="https://github.com/LabRedesCefetRJ/WeGIA" rel="noopener"
+                    >github.com/LabRedesCefetRJ/WeGIA ↗</a
+                  >
+                </p>
+              </article>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="experiencia" aria-labelledby="heading-experience">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-header__number" aria-hidden="true">02</span>
+            <h2 id="heading-experience">experiência</h2>
+            <span class="section-header__rule" aria-hidden="true"></span>
+          </div>
+          <ol class="entry-list">
+            <li>
+              <div class="entry entry--job">
+                <p class="entry__period"><time datetime="2025">2025</time> — hoje</p>
+                <div class="entry__heading">
+                  <h3>Desenvolvedor Júnior</h3>
+                  <p class="entry__org">brulve</p>
+                </div>
+                <div>
+                  <p class="entry__summary">
+                    Sistemas de gestão sob medida, no estilo CRM/ERP, construídos do zero até
+                    <strong>14 módulos</strong>. Levantamento de requisitos e modelagem de processos
+                    em <strong>BPMN</strong> com o cliente, modelagem de dados, arquitetura inicial,
+                    autenticação e permissões por papel, relatórios e importação e exportação de
+                    dados. Conduzi a homologação assistida com os próprios usuários.
+                  </p>
+                  <p class="entry__tools">
+                    php · laravel · mysql · git · gitlab · html5 · css · uikit · bootstrap 5 · bpmn
+                    · scrum e kanban
+                  </p>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="entry entry--job">
+                <p class="entry__period">
+                  <time datetime="2024">2024</time> — <time datetime="2025">2025</time>
+                </p>
+                <div class="entry__heading">
+                  <h3>Estagiário Full Stack</h3>
+                  <p class="entry__org">brulve</p>
+                </div>
+                <div>
+                  <p class="entry__summary">
+                    Manutenção e desenvolvimento de funcionalidades em Laravel e MySQL, com
+                    versionamento em GitLab.
+                  </p>
+                  <p class="entry__tools">
+                    php · laravel · mysql · git · gitlab · html5 · css · uikit · kanban
+                  </p>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="entry entry--job">
+                <p class="entry__period">
+                  <time datetime="2022">2022</time> — <time datetime="2024">2024</time>
+                </p>
+                <div class="entry__heading">
+                  <h3>Estagiário Full Stack</h3>
+                  <p class="entry__org">cefet/rj</p>
+                </div>
+                <div>
+                  <p class="entry__summary">
+                    Refatoração do WeGIA para Laravel, levantamento de documentação e reuniões com
+                    usuários potenciais do sistema. Ministrei a oficina de Laravel/PHP na SEPEX
+                    2023.
+                  </p>
+                  <p class="entry__tools">
+                    php · laravel · mysql · git · github · html5 · css · bootstrap 5
+                  </p>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="formacao" aria-labelledby="heading-education">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-header__number" aria-hidden="true">03</span>
+            <h2 id="heading-education">formação</h2>
+            <span class="section-header__rule" aria-hidden="true"></span>
+          </div>
+
+          <p class="subsection-label">acadêmica</p>
+          <ul class="entry-list">
+            <li>
+              <div class="entry entry--degree">
+                <p class="entry__period">2024 — 2028</p>
+                <div class="entry__heading">
+                  <h3>Bacharelado em Sistemas de Informação</h3>
+                  <p class="entry__org">
+                    centro federal de educação tecnológica celso suckow da fonseca —
+                    <i>campus</i> nova friburgo
+                  </p>
+                  <div class="knowledge">
+                    <p class="knowledge__label">áreas de conhecimento</p>
+                    <ul class="knowledge__list">
+                      <li>algoritmos e estruturas de dados</li>
+                      <li>orientação a objetos</li>
+                      <li>banco de dados e modelagem</li>
+                      <li>desenvolvimento web</li>
+                      <li>engenharia de software</li>
+                      <li>arquitetura de software</li>
+                      <li>qualidade e testes</li>
+                      <li>segurança de sistemas</li>
+                      <li>redes</li>
+                      <li>sistemas operacionais</li>
+                      <li>programação concorrente</li>
+                      <li>aplicações corporativas</li>
+                      <li>arquitetura de computadores</li>
+                      <li>interação humano-computador</li>
+                      <li>gestão de projetos de ti</li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="entry__status entry__status--active">em andamento</p>
+              </div>
+            </li>
+            <li>
+              <div class="entry entry--degree">
+                <p class="entry__period">2021 — 2023</p>
+                <div class="entry__heading">
+                  <h3>Técnico em Informática Integrado ao Ensino Médio</h3>
+                  <p class="entry__org">
+                    centro federal de educação tecnológica celso suckow da fonseca —
+                    <i>campus</i> nova friburgo
+                  </p>
+                  <div class="knowledge">
+                    <p class="knowledge__label">áreas de conhecimento</p>
+                    <ul class="knowledge__list">
+                      <li>algoritmos e programação</li>
+                      <li>desenvolvimento web</li>
+                      <li>front-end e interface</li>
+                      <li>banco de dados</li>
+                      <li>redes</li>
+                      <li>sistemas operacionais</li>
+                      <li>arquitetura de computadores</li>
+                      <li>mobile e embarcados</li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="entry__status">concluído</p>
+              </div>
+            </li>
+          </ul>
+
+          <p class="subsection-label">projetos acadêmicos</p>
+          <ul class="entry-list">
+            <li>
+              <div class="entry entry--project">
+                <p class="entry__period">2024 — 2025</p>
+                <div class="entry__heading">
+                  <h3>Automação de atividades escolares</h3>
+                  <p class="entry__summary entry__summary--indented">
+                    Automação de planilhas em AppScript e Formulários Google para gerar instrumentos
+                    de avaliação individualizados. Equipe de dois graduandos e dois doutorandos, sob
+                    coordenação do Prof. Daniel Gomes Ribeiro.
+                  </p>
+                </div>
+                <p class="entry__kind">
+                  projeto de ensino<br /><span>AppScript · Google Forms</span>
+                </p>
+              </div>
+            </li>
+            <li>
+              <div class="entry entry--project">
+                <p class="entry__period">2022 — 2024</p>
+                <div class="entry__heading">
+                  <h3>WeGIA</h3>
+                  <p class="entry__summary entry__summary--indented">
+                    Extensão universitária em software livre para instituições do terceiro setor,
+                    sob coordenação do Prof. Rafael Escalfoni.
+                    <a href="#projetos">Detalhado em Projetos ↑</a>
+                  </p>
+                </div>
+                <p class="entry__kind">projeto de extensão<br /><span>PHP · MySQL</span></p>
+              </div>
+            </li>
+          </ul>
+
+          <p class="subsection-label">certificações</p>
+          <ul class="entry-list">
+            <li>
+              <div class="entry entry--certificate">
+                <p class="entry__issuer">Alura</p>
+                <p class="entry__summary">
+                  Aplicação MVC em Laravel <span class="year">2023</span> · Design System: definindo
+                  estilos e tokens <span class="year">2024</span> · JavaScript para Web
+                  <span class="year">2022</span> · Formação HTML e CSS
+                  <span class="year">2021</span>
+                </p>
+              </div>
+            </li>
+            <li>
+              <div class="entry entry--certificate">
+                <p class="entry__issuer">Rocketseat</p>
+                <p class="entry__summary">
+                  NLW Pocket: Mobile — React Native <span class="year">2024</span>
+                </p>
+              </div>
+            </li>
+            <li>
+              <div class="entry entry--certificate">
+                <p class="entry__issuer">Cefet/RJ</p>
+                <p class="entry__summary">
+                  Introdução ao controle de versão de software com Git
+                  <span class="year">2023</span> · Controle de versão de software com Git
+                  <span class="year">2023</span> · Introdução ao desenvolvimento de software usando
+                  metodologias ágeis <span class="year">2023</span>
+                </p>
+              </div>
+            </li>
+            <li>
+              <div class="entry entry--certificate">
+                <p class="entry__issuer">Idiomas</p>
+                <p class="entry__summary">Português nativo · Inglês técnico — leitura</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="contato" aria-labelledby="heading-contact">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-header__number" aria-hidden="true">04</span>
+            <h2 id="heading-contact">contato</h2>
+            <span class="section-header__rule" aria-hidden="true"></span>
+          </div>
+          <div class="contact">
+            <div>
+              <p class="contact__email"><a href="mailto:paulo@affonso.dev">paulo@affonso.dev</a></p>
+              <p class="contact__note">
+                Para oportunidades, projetos freelance ou dúvidas sobre os pacotes que publico.
+              </p>
+            </div>
+            <ul class="contact-list">
+              <li>
+                <a href="https://github.com/AffonsoPaulo" rel="me noopener"
+                  ><span class="contact-list__label">github</span><span>AffonsoPaulo ↗</span></a
+                >
+              </li>
+              <li>
+                <a href="https://www.linkedin.com/in/paulo-affonso/" rel="me noopener"
+                  ><span class="contact-list__label">linkedin</span
+                  ><span>/in/paulo-affonso ↗</span></a
+                >
+              </li>
+              <li>
+                <a href="https://wa.me/5522999162183"
+                  ><span class="contact-list__label">whatsapp</span
+                  ><span>(22) 99916-2183 ↗</span></a
+                >
+              </li>
+              <li>
+                <a href="cv.pdf"
+                  ><span class="contact-list__label">currículo</span><span>pdf ↓</span></a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p><small>© 2026 paulo affonso</small></p>
+        <p><small>affonso.dev</small></p>
+      </div>
+    </footer>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Paulo Victor Silva Affonso",
+        "alternateName": "Paulo Affonso",
+        "url": "https://affonso.dev/",
+        "image": "https://affonso.dev/assets/paulo-affonso.jpg",
+        "email": "mailto:paulo@affonso.dev",
+        "jobTitle": "Desenvolvedor Full Stack e Analista de Sistemas",
+        "description": "Desenvolvedor full stack e analista de sistemas, especializado em sistemas de gestão sob medida em PHP e Laravel.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Nova Friburgo",
+          "addressRegion": "RJ",
+          "addressCountry": "BR"
+        },
+        "worksFor": { "@type": "Organization", "name": "Brulve" },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Centro Federal de Educação Tecnológica Celso Suckow da Fonseca",
+          "alternateName": "CEFET/RJ",
+          "url": "https://www.cefet-rj.br/"
+        },
+        "knowsAbout": [
+          "PHP",
+          "Laravel",
+          "MySQL",
+          "JavaScript",
+          "Sistemas de gestão",
+          "CRM",
+          "ERP",
+          "Levantamento de requisitos",
+          "BPMN",
+          "Modelagem de dados"
+        ],
+        "knowsLanguage": [
+          { "@type": "Language", "name": "Português", "alternateName": "pt" },
+          { "@type": "Language", "name": "Inglês", "alternateName": "en" }
+        ],
+        "sameAs": [
+          "https://github.com/AffonsoPaulo",
+          "https://www.linkedin.com/in/paulo-affonso/",
+          "https://x.com/affonsopaulo_",
+          "http://lattes.cnpq.br/5239290902278996",
+          "https://packagist.org/packages/affonsopaulo/manual"
+        ]
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "Manual",
+        "description": "Pacote Laravel que gera um site de documentação a partir de arquivos Markdown, sem build step, sem Node e sem banco de dados.",
+        "programmingLanguage": "PHP",
+        "runtimePlatform": "Laravel",
+        "codeRepository": "https://github.com/AffonsoPaulo/manual",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": { "@type": "Person", "name": "Paulo Affonso", "url": "https://affonso.dev/" }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "software-architect",
+        "description": "Skill que conduz o planejamento de um projeto de software em 18 fases para agentes de código, gerando documentação de requisitos, arquitetura, segurança e testes.",
+        "programmingLanguage": "JavaScript",
+        "runtimePlatform": "Claude Code",
+        "codeRepository": "https://github.com/AffonsoPaulo/software-architect",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": { "@type": "Person", "name": "Paulo Affonso", "url": "https://affonso.dev/" }
+      }
+    </script>
+  </body>
+</html>
