@@ -13,23 +13,23 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Formatação
-        run: npx --yes prettier --check "**/*.{html,css,yml,json}"
+        run: npx --yes prettier@3 --check "**/*.{html,css,yml,json}"
 
       - name: Validar o HTML
-        run: npx --yes html-validate index.html en/index.html 404.html
+        run: npx --yes html-validate@11 index.html en/index.html 404.html
 
       - name: Servir localmente
         run: |
-          npx --yes serve -l 8080 . &
-          npx --yes wait-on http://localhost:8080
+          npx --yes serve@14 -l 8080 . &
+          npx --yes wait-on@9 http://localhost:8080
 
-      - name: Acessibilidade (axe)
-        run: npx --yes @axe-core/cli http://localhost:8080 http://localhost:8080/en/ --exit
+      - name: Acessibilidade
+        run: npx --yes pa11y-ci@4
 
       - name: Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
           urls: |
-            http://localhost:8080
+            http://localhost:8080/
             http://localhost:8080/en/
           uploadArtifacts: true

@@ -235,6 +235,13 @@
   font-size: 15px;
   line-height: 1.6;
 }
+
+.entry__summary a,
+.project__summary a,
+.contact__note a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .entry__summary--indented {
   margin-top: 8px;
   max-width: 62ch;
