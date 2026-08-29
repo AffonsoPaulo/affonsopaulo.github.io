@@ -64,6 +64,29 @@
   color: var(--ink);
 }
 
+@media (max-width: 699px) {
+  .site-header .container {
+    align-items: flex-start;
+    gap: 10px;
+    min-height: 0;
+    padding-block: 14px;
+  }
+
+  .site-brand {
+    width: 100%;
+  }
+
+  .site-nav {
+    width: 100%;
+    gap: 9px 16px;
+    font-size: 12px;
+  }
+
+  .lang-switch {
+    padding-left: 14px;
+  }
+}
+
 .hero {
   padding-block: 44px 40px;
 }
