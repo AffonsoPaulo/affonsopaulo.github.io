@@ -25,6 +25,7 @@
   font-family: var(--mono);
   font-size: 13px;
   transition:
+    background-color 0.14s linear,
     border-color 0.14s linear,
     color 0.14s linear;
 }
@@ -361,10 +362,4 @@
   font-family: var(--mono);
   font-size: 13px;
   color: var(--muted);
-}
-
-@media (max-width: 559px) {
-  .hide-on-small {
-    display: none;
-  }
 }
