@@ -1,0 +1,834 @@
+/* Camada de texto longo: usada pelas páginas de /blog.
+   Reaproveita os tokens de variables.css e acrescenta só o que
+   um artigo precisa e o portfólio ainda não tinha. */
+
+:root {
+  --ok: #7fb894;
+  --warn: #d4a548;
+  --bad: #d98a7a;
+  --review: #9b8fd0;
+
+  /* --muted do portfólio fica em 4.35:1 sobre o fundo, abaixo do mínimo
+     de 4.5:1 da WCAG AA para texto normal; este tom fica em 5.7:1. */
+  --soft: #8f8f89;
+
+  --measure: 68ch;
+}
+
+/* O reset do site usa scroll-behavior: smooth, ótimo para os saltos
+   curtos da home. Aqui a página tem ~58.000px e um salto do índice
+   vira uma animação de vários segundos, em que o leitor vê a seção
+   anterior antes de chegar ao destino. Nesta página o salto é direto. */
+html {
+  scroll-behavior: auto;
+}
+
+/* ------------------------------------------------------------------
+   Estrutura
+   ------------------------------------------------------------------ */
+.article {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-bottom: 40px;
+}
+
+.article-head {
+  padding-block: 40px 36px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 40px;
+}
+
+.article-head__kicker {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.article-head h1 {
+  font-size: clamp(32px, 6vw, 46px);
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  max-width: 20ch;
+}
+
+.article-head__standfirst {
+  margin-top: 18px;
+  max-width: 62ch;
+  font-size: clamp(17px, 2.4vw, 19px);
+  line-height: 1.55;
+  color: var(--body);
+}
+
+.article-head__meta {
+  margin-top: 22px;
+  max-width: 68ch;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--soft);
+}
+.article-head__meta a {
+  color: var(--body);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.article-head__meta a:hover {
+  color: var(--ink);
+}
+
+@media (min-width: 1000px) {
+  .article-shell {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 64px;
+    align-items: start;
+  }
+}
+
+/* A coluna de texto tem largura de leitura; figuras e diagramas ocupam
+   toda a largura disponível sem precisar de wrapper extra. */
+.prose {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(0, 1fr)
+    [text-start] min(var(--measure), 100%)
+    [text-end] minmax(0, 1fr)
+    [full-end];
+  font-size: 17px;
+  line-height: 1.7;
+}
+.prose > *,
+.prose > section > * {
+  grid-column: text;
+}
+.prose > figure,
+.prose > section > figure {
+  grid-column: full;
+}
+
+@media (max-width: 999px) {
+  .prose > figure,
+  .prose > section > figure {
+    grid-column: text;
+  }
+}
+
+.prose > section {
+  margin-bottom: 72px;
+  scroll-margin-top: 24px;
+}
+/* ------------------------------------------------------------------
+   Texto
+   ------------------------------------------------------------------ */
+.prose p {
+  margin: 0 0 18px;
+}
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.prose h2 {
+  font-size: clamp(24px, 3.4vw, 31px);
+  line-height: 1.15;
+  margin: 0 0 20px;
+}
+
+.prose h2 .num {
+  display: block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.prose h3 {
+  font-size: 19px;
+  margin: 36px 0 14px;
+}
+
+.prose h4 {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 26px 0 10px;
+}
+
+.prose > section > p:first-of-type {
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+}
+
+.prose strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.prose em {
+  font-style: italic;
+}
+
+.prose ul,
+.prose ol {
+  list-style: revert;
+  padding-left: 1.2em;
+  margin: 0 0 18px;
+}
+.prose li {
+  margin-bottom: 8px;
+}
+.prose li:last-child {
+  margin-bottom: 0;
+}
+.prose li > ul,
+.prose li > ol {
+  margin-top: 8px;
+}
+
+.prose blockquote {
+  margin: 22px 0;
+  padding-left: 18px;
+  border-left: 2px solid var(--edge-hi);
+  color: var(--soft);
+  font-style: italic;
+}
+
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  color: var(--ink);
+}
+.prose :not(pre) > code {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.1em 0.32em;
+  overflow-wrap: break-word;
+}
+
+kbd {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+  color: var(--ink);
+}
+
+/* Frase de destaque: duas réguas, sem caixa e sem aspas decorativas. */
+.pull {
+  margin: 34px 0;
+  padding: 24px 0;
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+  font-size: clamp(19px, 2.6vw, 24px);
+  font-weight: 500;
+  line-height: 1.32;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  text-wrap: balance;
+}
+
+/* ------------------------------------------------------------------
+   Índice
+   ------------------------------------------------------------------ */
+.toc {
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.toc > summary {
+  cursor: pointer;
+  color: var(--ink);
+  padding: 12px 0;
+}
+
+.toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: toc;
+}
+.toc li {
+  counter-increment: toc;
+  margin: 0;
+}
+
+.toc a {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 4px;
+  padding: 5px 0;
+  color: var(--soft);
+  text-decoration: none;
+  border-left: 1px solid transparent;
+}
+.toc a::before {
+  content: counter(toc);
+  padding-left: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--edge-hi);
+}
+.toc a:hover {
+  color: var(--ink);
+}
+.toc a[aria-current="true"] {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+
+@media (min-width: 1000px) {
+  .toc {
+    position: sticky;
+    top: 24px;
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
+    padding-bottom: 32px;
+  }
+  .toc > summary {
+    display: none;
+  }
+}
+
+@media (max-width: 999px) {
+  .toc {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 0 16px;
+    margin-bottom: 48px;
+  }
+  .toc[open] > summary {
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 10px;
+  }
+  .toc ol {
+    padding-bottom: 14px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Callouts
+   ------------------------------------------------------------------ */
+.note {
+  margin: 26px 0;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--edge-hi);
+  border-radius: 0 8px 8px 0;
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+
+.note__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+.note__icon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon-sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.note--tip {
+  border-left-color: var(--accent);
+}
+.note--tip .note__label {
+  color: var(--accent);
+}
+.note--good {
+  border-left-color: var(--ok);
+}
+.note--good .note__label {
+  color: var(--ok);
+}
+.note--warn {
+  border-left-color: var(--warn);
+}
+.note--warn .note__label {
+  color: var(--warn);
+}
+.note--bad {
+  border-left-color: var(--bad);
+}
+.note--bad .note__label {
+  color: var(--bad);
+}
+.note--review {
+  border-left-color: var(--review);
+}
+.note--review .note__label {
+  color: var(--review);
+}
+.note--market {
+  border-left-color: var(--edge-hi);
+}
+
+/* ------------------------------------------------------------------
+   Figuras
+   ------------------------------------------------------------------ */
+.prose figure {
+  margin: 34px 0;
+}
+
+.prose figure img {
+  width: 100%;
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  cursor: zoom-in;
+}
+
+figcaption {
+  margin-top: 14px;
+  max-width: var(--measure);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--soft);
+}
+figcaption b {
+  color: var(--ink);
+  font-weight: 600;
+}
+figcaption .look {
+  display: block;
+  margin-top: 8px;
+  padding-left: 14px;
+  border-left: 1px solid var(--edge);
+}
+
+/* ------------------------------------------------------------------
+   Código em bloco
+   ------------------------------------------------------------------ */
+.prose pre {
+  margin: 22px 0;
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.6;
+  tab-size: 2;
+  color: var(--ink);
+}
+.prose pre code {
+  font-size: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.code-title {
+  display: block;
+  margin: 22px 0 -14px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--soft);
+}
+.code-title + pre {
+  margin-top: 10px;
+}
+
+pre .add {
+  color: var(--ok);
+}
+pre .del {
+  color: var(--bad);
+}
+pre .cmt {
+  color: var(--soft);
+}
+
+/* ------------------------------------------------------------------
+   Tabelas
+   ------------------------------------------------------------------ */
+.table-wrap {
+  overflow-x: auto;
+  margin: 24px 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.prose th,
+.prose td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 18px 12px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.prose th {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  border-bottom-color: var(--edge);
+}
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* ------------------------------------------------------------------
+   Diagramas
+   ------------------------------------------------------------------ */
+.diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg);
+}
+.diagram text {
+  font-family: var(--sans);
+  color: var(--ink);
+}
+.diagram .bg {
+  fill: var(--bg);
+}
+.diagram .label {
+  fill: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+.diagram .sub {
+  fill: var(--soft);
+  color: var(--soft);
+  font-size: 11.5px;
+}
+.diagram .line-main {
+  stroke: var(--edge-hi);
+  stroke-width: 2.5;
+  fill: none;
+}
+.diagram .line-feat {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  fill: none;
+}
+.diagram .dot-main {
+  fill: var(--bg);
+  stroke: var(--edge-hi);
+  stroke-width: 2.5;
+}
+.diagram .dot-feat {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+.diagram .dot-merge {
+  fill: var(--accent);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+/* ------------------------------------------------------------------
+   Cadeia de etapas: A → B → C
+   ------------------------------------------------------------------ */
+.flowsteps {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 24px 0;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+.flowsteps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+.flowsteps li::after {
+  content: "→";
+  color: var(--edge-hi);
+}
+.flowsteps li:last-child::after {
+  content: none;
+}
+.flowsteps b {
+  display: inline-block;
+  padding: 5px 10px;
+  font-weight: 400;
+  color: var(--body);
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+}
+.flowsteps .is-key b {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.flowsteps .is-auto b {
+  border-style: dashed;
+}
+
+/* ------------------------------------------------------------------
+   Comparações lado a lado
+   ------------------------------------------------------------------ */
+.compare {
+  display: grid;
+  gap: 20px;
+  margin: 24px 0;
+}
+@media (min-width: 700px) {
+  .compare {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+}
+.compare > * {
+  margin: 0;
+}
+.compare h4 {
+  margin: 0 0 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.compare pre {
+  margin: 0;
+  font-size: 12px;
+}
+.compare__note {
+  font-size: 15px;
+}
+.compare__bad h4 {
+  color: var(--bad);
+}
+.compare__good h4 {
+  color: var(--ok);
+}
+
+/* ------------------------------------------------------------------
+   Etapas com explicação
+   ------------------------------------------------------------------ */
+.stages {
+  list-style: none;
+  margin: 24px 0;
+  padding: 0;
+  border-left: 1px solid var(--edge);
+}
+.stages li {
+  position: relative;
+  margin: 0;
+  padding: 0 0 26px 24px;
+}
+.stages li:last-child {
+  padding-bottom: 0;
+}
+.stages li::before {
+  content: "";
+  position: absolute;
+  left: -4.5px;
+  top: 0.5em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.stages h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+.stages p {
+  font-size: 15.5px;
+}
+
+/* ------------------------------------------------------------------
+   Checklists
+   ------------------------------------------------------------------ */
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  font-size: 15.5px;
+  border-top: 1px solid var(--rule);
+}
+.checklist li {
+  position: relative;
+  margin: 0;
+  padding: 12px 0 12px 28px;
+  border-bottom: 1px solid var(--rule);
+  line-height: 1.5;
+}
+.checklist li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 15px;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--edge-hi);
+  border-radius: 3px;
+}
+
+/* ------------------------------------------------------------------
+   Listas de definição: glossário, boas práticas, erros
+   ------------------------------------------------------------------ */
+.deflist {
+  margin: 24px 0 0;
+}
+.deflist div {
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+}
+.deflist dt {
+  margin-bottom: 6px;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 15.5px;
+}
+.deflist dd {
+  margin: 0;
+  font-size: 15.5px;
+}
+
+/* ------------------------------------------------------------------
+   Citações e referências
+   ------------------------------------------------------------------ */
+.cit {
+  font-size: 0.92em;
+  color: var(--soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.cit:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.refs {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.refs li {
+  margin-bottom: 16px;
+}
+.refs b {
+  color: var(--ink);
+  font-weight: 600;
+}
+.refs a {
+  overflow-wrap: anywhere;
+}
+.refs li:target {
+  background: var(--surface);
+  box-shadow: 0 0 0 8px var(--surface);
+  border-radius: 2px;
+}
+
+/* ------------------------------------------------------------------
+   Rodapé do artigo
+   ------------------------------------------------------------------ */
+.colophon {
+  margin-top: 56px;
+  padding-top: 26px;
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--soft);
+}
+.colophon p {
+  max-width: 68ch;
+}
+.colophon a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.colophon b {
+  color: var(--body);
+}
+
+/* ------------------------------------------------------------------
+   Lightbox das capturas
+   ------------------------------------------------------------------ */
+dialog.lightbox {
+  border: 0;
+  padding: 0;
+  max-width: 96vw;
+  max-height: 96vh;
+  background: transparent;
+}
+dialog.lightbox::backdrop {
+  background: rgb(6 6 6 / 88%);
+}
+dialog.lightbox img {
+  display: block;
+  max-width: 96vw;
+  max-height: 92vh;
+  width: auto;
+  border-radius: 8px;
+  cursor: zoom-out;
+}
+dialog.lightbox p {
+  margin: 12px auto 0;
+  max-width: 70ch;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--body);
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  dialog.lightbox {
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow: auto;
+  }
+  dialog.lightbox img {
+    max-width: none;
+    max-height: none;
+    width: 900px;
+    cursor: default;
+  }
+  dialog.lightbox p {
+    display: none;
+  }
+}
+
+@media print {
+  .toc,
+  dialog.lightbox {
+    display: none;
+  }
+}
