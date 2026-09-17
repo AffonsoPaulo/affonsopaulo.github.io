@@ -1,0 +1,3496 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pull Requests e Code Review no GitHub — Paulo Affonso</title>
+    <meta
+      name="description"
+      content="Guia prático sobre Pull Requests e Code Review no GitHub, do primeiro commit ao merge, com telas reais da interface atual e um repositório de exemplo para acompanhar."
+    />
+
+    <link rel="canonical" href="https://affonso.dev/blog/pr-e-code-review/" />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:url" content="https://affonso.dev/blog/pr-e-code-review/" />
+    <meta property="og:site_name" content="Paulo Affonso" />
+    <meta property="og:title" content="Pull Requests e Code Review no GitHub" />
+    <meta
+      property="og:description"
+      content="Do primeiro commit ao merge, com telas reais da interface atual e um repositório de verdade para acompanhar."
+    />
+    <meta property="og:image" content="https://affonso.dev/assets/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Paulo Affonso, desenvolvedor full stack" />
+    <meta property="article:published_time" content="2026-09-17" />
+    <meta property="article:author" content="Paulo Affonso" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@affonsopaulo_" />
+
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/assets/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="icon" href="/assets/favicon-16.png" type="image/png" sizes="16x16" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0D0D0D" />
+
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/assets/fonts/ibm-plex-sans-latin-400-normal.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/assets/fonts/ibm-plex-sans-latin-600-normal.woff2"
+    />
+
+    <link rel="stylesheet" href="/assets/css/variables.css" />
+    <link rel="stylesheet" href="/assets/css/reset.css" />
+    <link rel="stylesheet" href="/assets/css/typography.css" />
+    <link rel="stylesheet" href="/assets/css/layout.css" />
+    <link rel="stylesheet" href="/assets/css/components.css" />
+    <link rel="stylesheet" href="/assets/css/article.css" />
+  </head>
+
+  <body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false" width="0" height="0">
+      <defs>
+        <symbol id="i-dica" viewBox="0 0 16 16">
+          <path
+            d="M8 1.6a4.4 4.4 0 0 0-2.6 8c.4.3.6.7.6 1.1v.2h4v-.2c0-.4.2-.8.6-1.1a4.4 4.4 0 0 0-2.6-8Z"
+          />
+          <path d="M6.3 13h3.4M7 14.6h2" />
+        </symbol>
+        <symbol id="i-atencao" viewBox="0 0 16 16">
+          <path d="M8 2.1 1.5 13.4h13L8 2.1Z" />
+          <path d="M8 6.4v3.2M8 11.6v.1" />
+        </symbol>
+        <symbol id="i-boa" viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="6.2" />
+          <path d="m5.2 8.2 1.9 1.9 3.7-4.2" />
+        </symbol>
+        <symbol id="i-erro" viewBox="0 0 16 16">
+          <circle cx="8" cy="8" r="6.2" />
+          <path d="m5.9 5.9 4.2 4.2M10.1 5.9l-4.2 4.2" />
+        </symbol>
+        <symbol id="i-mercado" viewBox="0 0 16 16">
+          <path d="M2.4 13.6V4.4l5.1-2.2v11.4M7.5 13.6h6.1V6.7H7.5" />
+          <path d="M4.3 6.1h1.3M4.3 8.5h1.3M4.3 10.9h1.3M9.6 8.9h2M9.6 11.2h2" />
+        </symbol>
+        <symbol id="i-review" viewBox="0 0 16 16">
+          <circle cx="6.9" cy="6.9" r="4.6" />
+          <path d="m10.3 10.3 3.3 3.3" />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+    <header class="site-header">
+      <div class="container">
+        <a class="site-brand" href="/">paulo affonso</a>
+        <nav class="site-nav" aria-label="Principal">
+          <a class="site-nav__link" href="/#projetos">projetos</a>
+          <a class="site-nav__link" href="/#experiencia">experiência</a>
+          <a class="site-nav__link" href="/#formacao">formação</a>
+          <a class="site-nav__link" href="/#contato">contato</a>
+          <a class="site-nav__link site-nav__link--resume" href="/cv.pdf">curriculo.pdf</a>
+          <span class="lang-switch"
+            ><b class="lang-switch__current">pt</b> /
+            <a class="lang-switch__link" href="/en/" lang="en">en</a></span
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main id="conteudo">
+      <div class="container">
+        <article class="article">
+          <header class="article-head">
+            <p class="article-head__kicker">guia prático · github</p>
+            <h1>Pull Requests e Code Review no GitHub</h1>
+            <p class="article-head__standfirst">
+              Do primeiro commit até o merge, com as telas reais da interface atual e um repositório
+              de verdade para acompanhar. Escrito para quem está entrando no mercado e precisa
+              entender como esse processo funciona dentro de uma equipe.
+            </p>
+            <p class="article-head__meta">
+              17 de setembro de 2026 · Todas as capturas de tela foram feitas na interface atual do
+              GitHub, a partir do repositório
+              <a href="https://github.com/AffonsoPaulo/pr-and-code-review"
+                >AffonsoPaulo/pr-and-code-review</a
+              >, criado especificamente para servir de exemplo.
+            </p>
+          </header>
+
+          <div class="article-shell">
+            <details class="toc" id="indice" open>
+              <summary>Índice</summary>
+              <nav aria-label="Índice do artigo">
+                <ol>
+                  <li><a href="#introducao">Por que isso existe</a></li>
+                  <li><a href="#git-essencial">O mínimo de Git</a></li>
+                  <li><a href="#o-que-e-pr">O que é um Pull Request</a></li>
+                  <li><a href="#criando-pr">Criando um PR na prática</a></li>
+                  <li><a href="#bom-pr">Como escrever um bom PR</a></li>
+                  <li><a href="#o-que-e-code-review">O que é Code Review</a></li>
+                  <li><a href="#revisando">Revisando no GitHub</a></li>
+                  <li><a href="#decisao">Approve, Comment, Request changes</a></li>
+                  <li><a href="#comentarios">Bons comentários</a></li>
+                  <li><a href="#sugestoes">Sugestões de código</a></li>
+                  <li><a href="#recebendo">Recebendo uma revisão</a></li>
+                  <li><a href="#novos-commits">Novos commits no PR</a></li>
+                  <li><a href="#merge">Merge: as três estratégias</a></li>
+                  <li><a href="#conflitos">Merge conflicts</a></li>
+                  <li><a href="#ci">Checks e CI/CD</a></li>
+                  <li><a href="#protecoes">Branch protection e Rulesets</a></li>
+                  <li><a href="#codeowners">CODEOWNERS</a></li>
+                  <li><a href="#draft">Draft Pull Requests</a></li>
+                  <li><a href="#tamanho">PR pequeno vs. PR gigante</a></li>
+                  <li><a href="#mercado">Como o mercado usa PRs</a></li>
+                  <li><a href="#fluxo-completo">Fluxo completo de uma tarefa</a></li>
+                  <li><a href="#boas-praticas">Boas práticas</a></li>
+                  <li><a href="#erros-comuns">Erros comuns</a></li>
+                  <li><a href="#checklist-autor">Checklist do autor</a></li>
+                  <li><a href="#checklist-reviewer">Checklist do reviewer</a></li>
+                  <li><a href="#glossario">Glossário</a></li>
+                  <li><a href="#referencias">Referências</a></li>
+                </ol>
+              </nav>
+            </details>
+
+            <div class="prose">
+              <section id="introducao">
+                <h2><span class="num">Seção 1</span>Por que Pull Requests e Code Review existem</h2>
+
+                <p>
+                  Imagine a sua primeira semana em uma equipe. Você recebe uma tarefa pequena — um
+                  bug no checkout, digamos —, resolve em vinte linhas e quer ver aquilo funcionando
+                  em produção. Em um projeto pessoal, bastaria um <code>git push</code> na
+                  <code>main</code>. Em praticamente nenhuma equipe profissional é assim:
+                  <strong>o push direto na branch principal costuma estar bloqueado</strong>, e o
+                  caminho passa por um Pull Request.
+                </p>
+
+                <p>
+                  Essa fricção é deliberada. A branch principal normalmente é a que vai para
+                  produção, direta ou indiretamente, e uma mudança que entra nela deixa de ser
+                  problema de quem escreveu para ser problema de todo mundo.
+                  <strong>O Pull Request é o ponto de controle antes disso acontecer</strong>: ele
+                  isola a sua mudança em um diff que dá para ler, dispara os testes automatizados,
+                  abre espaço para quem conhece aquela parte do sistema comentar e só libera o merge
+                  quando as condições combinadas pela equipe foram satisfeitas.
+                </p>
+
+                <p>
+                  O efeito colateral mais subestimado é o registro. Daqui a seis meses, alguém vai
+                  rodar
+                  <code>git blame</code> em uma linha estranha, chegar no commit e, a partir dele,
+                  no Pull Request — e encontrar não só o que mudou, mas
+                  <strong>por que mudou, quem discordou e qual argumento venceu</strong>.
+                </p>
+
+                <p class="pull">
+                  Código conta o <em>como</em>. O histórico de PRs é onde fica o <em>porquê</em>.
+                </p>
+
+                <h3>O caminho que uma tarefa percorre</h3>
+
+                <p>
+                  O fluxo abaixo é o fio condutor deste guia. Cada etapa vai aparecer com a tela
+                  correspondente, na ordem em que acontece no dia a dia:
+                </p>
+
+                <ol class="flowsteps">
+                  <li><b>Tarefa / issue</b></li>
+                  <li><b>Branch</b></li>
+                  <li><b>Commits</b></li>
+                  <li><b>Push</b></li>
+                  <li class="is-key"><b>Pull Request</b></li>
+                  <li class="is-auto"><b>CI</b></li>
+                  <li class="is-key"><b>Code Review</b></li>
+                  <li><b>Ajustes</b></li>
+                  <li><b>Merge</b></li>
+                </ol>
+
+                <p>
+                  Para não falar no abstrato, tudo acontece em um repositório de verdade:
+                  <a href="https://github.com/AffonsoPaulo/pr-and-code-review"
+                    >AffonsoPaulo/pr-and-code-review</a
+                  >. É um módulo minúsculo em JavaScript que calcula o total de um carrinho de
+                  compras aplicando cupons de desconto. A tarefa que vamos acompanhar é a
+                  <a href="https://github.com/AffonsoPaulo/pr-and-code-review/issues/1">issue #1</a
+                  >: um cupom inexistente derruba o checkout inteiro. A correção virou o
+                  <a href="https://github.com/AffonsoPaulo/pr-and-code-review/pull/3"
+                    >Pull Request #3</a
+                  >, e é dele que vêm quase todas as capturas deste artigo
+                  <a class="cit" href="#ref-affonso-2026">(AFFONSO, 2026)</a>.
+                </p>
+
+                <div role="note" class="note note--market">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-mercado" />
+                    </svg>
+                    No mercado
+                  </p>
+                  <p>
+                    Nenhuma empresa usa exatamente o mesmo processo. Numa startup de cinco pessoas,
+                    um PR pode sair aberto e mergeado no mesmo dia com uma aprovação. Num banco, o
+                    mesmo PR pode precisar de duas aprovações, uma delas de um time específico, mais
+                    checagens de segurança e uma janela de deploy. O que não muda é a peça central:
+                    alguém propõe, alguém revisa, a máquina verifica, e só então o código entra.
+                  </p>
+                </div>
+              </section>
+
+              <section id="git-essencial">
+                <h2><span class="num">Seção 2</span>Antes do Pull Request: o mínimo de Git</h2>
+
+                <p>
+                  Você não precisa dominar Git para entender Pull Requests, mas precisa de um
+                  punhado de conceitos. Esta seção cobre só o necessário para o resto do artigo
+                  fazer sentido.
+                </p>
+
+                <p>
+                  Um <b>repositório</b> é a pasta do projeto junto com todo o seu histórico. Ele
+                  existe em dois lugares ao mesmo tempo: o <b>repositório local</b>, no seu
+                  computador, e o <b>repositório remoto</b>, hospedado no GitHub.
+                  <code>git clone</code> cria o local a partir do remoto, e a partir daí os dois
+                  vivem separados até você sincronizá-los de propósito com <code>push</code> e
+                  <code>pull</code>.
+                </p>
+
+                <p>
+                  Um <b>commit</b> é uma fotografia do projeto em um instante, com autor, data,
+                  mensagem e um identificador (o SHA, aquele <code>d16452f</code> que aparece na
+                  interface). Commits encadeiam-se: cada um aponta para o anterior, e essa corrente
+                  é o histórico.
+                </p>
+
+                <p>
+                  Uma <b>branch</b> é um ponteiro móvel para um commit dessa corrente. É por isso
+                  que criar uma branch é instantâneo e barato: <strong>não se copia nada</strong>,
+                  só se anota "a partir daqui, meus commits seguem por este caminho". A
+                  <code>main</code> é a branch principal — a versão oficial do projeto. Uma
+                  <b>branch de feature</b> é uma linha paralela onde você trabalha sem afetar a
+                  <code>main</code> enquanto a mudança não estiver pronta
+                  <a class="cit" href="#ref-chacon-2014">(CHACON; STRAUB, 2014)</a>.
+                </p>
+
+                <p>Na prática, foram estes comandos que produziram a branch que o PR #3 propõe:</p>
+
+                <span class="code-title">Terminal</span>
+                <pre><code><span class="cmt"># baixa o repositório remoto para a sua máquina (uma vez só)</span>
+git clone https://github.com/AffonsoPaulo/pr-and-code-review.git
+cd pr-and-code-review
+
+<span class="cmt"># parte sempre de uma main atualizada, senão você constrói em cima de código velho</span>
+git switch main
+git pull
+
+<span class="cmt"># cria a branch de trabalho e já muda para ela</span>
+git switch -c fix/1-cupom-invalido
+
+<span class="cmt"># ... edita src/cupom.js ...</span>
+
+<span class="cmt"># seleciona o que entra no commit e registra a mudança</span>
+git add src/cupom.js
+git commit -m "Ignora cupom inexistente ou expirado em vez de quebrar"
+
+<span class="cmt"># publica a branch no GitHub; -u liga a branch local à remota</span>
+git push -u origin fix/1-cupom-invalido</code></pre>
+
+                <p>
+                  <code>git switch -c</code> é a forma moderna de criar e trocar de branch;
+                  <code>git checkout -b</code> faz o mesmo e continua funcionando — você vai ver os
+                  dois por aí. O <code>git add</code> existe porque
+                  <strong>nem tudo que você editou precisa entrar no mesmo commit</strong>: ele é a
+                  chance de separar o que é a mudança de verdade do arquivo de teste que você sujou
+                  sem querer.
+                </p>
+
+                <div role="note" class="note note--tip">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-dica" />
+                    </svg>
+                    Dica
+                  </p>
+                  <p>
+                    Nomes de branch curtos e previsíveis ajudam mais do que parece. Um padrão comum
+                    é
+                    <code>tipo/numero-descricao</code>, como <code>fix/1-cupom-invalido</code> ou
+                    <code>feat/431-user-avatar</code>: o tipo diz o que é, o número liga à tarefa e
+                    a descrição evita que você abra três branches e não lembre qual é qual.
+                  </p>
+                </div>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/02-branches.webp"
+                    alt="Página de branches do repositório listando a branch padrão main e quatro branches de trabalho, com colunas de status dos checks, quantos commits estão atrás e à frente da main, e o Pull Request associado a cada uma."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>A página de branches do repositório.</b> Depois do push, a branch aparece
+                    aqui ao lado da <code>main</code>.
+                    <span class="look"
+                      >Observe as colunas <b>Behind</b> e <b>Ahead</b>: quantos commits aquela
+                      branch está atrás e à frente da <code>main</code>.
+                      <code>fix/1-cupom-invalido</code> está 4 commits à frente e 1 atrás — e a
+                      coluna <b>Pull request</b> já liga cada branch ao PR correspondente.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  Até aqui nada saiu do seu controle: os commits existem na sua máquina e, depois do
+                  push, também numa branch remota que ninguém está usando. O Pull Request é o passo
+                  seguinte —
+                  <strong
+                    >o momento em que você pede que esse trabalho seja incorporado à
+                    <code>main</code></strong
+                  >. Se quiser exercitar esses comandos antes de seguir, o GitHub mantém cursos
+                  gratuitos que rodam dentro de repositórios de exercício
+                  <a class="cit" href="#ref-gh-2026m">(GITHUB, 2026m)</a>.
+                </p>
+              </section>
+
+              <section id="o-que-e-pr">
+                <h2><span class="num">Seção 3</span>O que é um Pull Request</h2>
+
+                <p>
+                  Um Pull Request é um pedido formal para que os commits de uma branch sejam
+                  incorporados a outra.
+                  <strong>Ele não é uma operação do Git</strong>: é um objeto do GitHub, com número,
+                  título, descrição, comentários, revisões e resultado de checks automatizados,
+                  construído em volta da comparação entre duas branches
+                  <a class="cit" href="#ref-gh-2026f">(GITHUB, 2026f)</a>.
+                </p>
+
+                <p>
+                  O nome vem de antes do GitHub. No fluxo original do Git, um colaborador publicava
+                  sua cópia do repositório e enviava ao mantenedor um pedido para que ele
+                  <i>puxasse</i> (<i>pull</i>) aquelas alterações — o comando
+                  <code>git request-pull</code> existe até hoje e gera exatamente esse texto
+                  <a class="cit" href="#ref-git-2026">(GIT, 2026)</a>. O GitHub transformou esse
+                  pedido em uma página com discussão, revisão e um botão de merge.
+                </p>
+
+                <h3>Commit, branch e Pull Request não são a mesma coisa</h3>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Conceito</th>
+                        <th scope="col">O que é</th>
+                        <th scope="col">Onde vive</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><b>Commit</b></td>
+                        <td>Uma mudança registrada no histórico, com mensagem e identificador.</td>
+                        <td>Git (local e remoto)</td>
+                      </tr>
+                      <tr>
+                        <td><b>Branch</b></td>
+                        <td>Um ponteiro para o commit mais recente de uma linha de trabalho.</td>
+                        <td>Git (local e remoto)</td>
+                      </tr>
+                      <tr>
+                        <td><b>Pull Request</b></td>
+                        <td>
+                          Uma proposta de integrar uma branch em outra, com discussão, revisão e
+                          checks.
+                        </td>
+                        <td>Só no GitHub</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p>
+                  A consequência prática: <strong>apagar um Pull Request não apaga commits</strong>,
+                  e um PR fechado sem merge deixa os commits existindo na branch dele. Da mesma
+                  forma, o PR não "contém" código — <strong>ele aponta para duas branches</strong> e
+                  mostra a diferença entre elas a cada instante.
+                </p>
+
+                <h3>Branch de origem e branch de destino</h3>
+
+                <p>
+                  Todo PR tem dois lados. A <b>base</b> é a branch de destino, para onde as mudanças
+                  vão — quase sempre a <code>main</code>. A <b>compare</b> (ou <i>head</i>) é a
+                  branch de origem, onde estão os seus commits. O GitHub calcula a diferença entre
+                  as duas e é essa diferença que as pessoas revisam.
+                </p>
+
+                <figure class="diagram">
+                  <svg viewBox="0 0 900 250" role="img" aria-labelledby="dg1-title">
+                    <title id="dg1-title">
+                      Grafo de commits mostrando a branch fix/1-cupom-invalido saindo da main e
+                      voltando por um merge
+                    </title>
+                    <rect class="bg" x="0" y="0" width="100%" height="100%" />
+                    <path class="line-main" d="M40 190 H860" />
+                    <path
+                      class="line-feat"
+                      d="M230 190 C 285 190, 285 100, 340 100 H 640 C 700 100, 700 190, 755 190"
+                    />
+                    <circle class="dot-main" cx="90" cy="190" r="7" />
+                    <circle class="dot-main" cx="160" cy="190" r="7" />
+                    <circle class="dot-main" cx="230" cy="190" r="7" />
+                    <circle class="dot-feat" cx="400" cy="100" r="7" />
+                    <circle class="dot-feat" cx="500" cy="100" r="7" />
+                    <circle class="dot-feat" cx="600" cy="100" r="7" />
+                    <circle class="dot-merge" cx="755" cy="190" r="8" />
+                    <circle class="dot-main" cx="830" cy="190" r="7" />
+                    <text class="label" x="40" y="225">main</text>
+                    <text class="sub" x="40" y="242">branch de destino (base)</text>
+                    <text class="label" x="340" y="70">fix/1-cupom-invalido</text>
+                    <text class="sub" x="340" y="52">branch de origem (compare)</text>
+                    <text class="sub" x="395" y="135">commits do seu trabalho</text>
+                    <text class="sub" x="730" y="225">merge</text>
+                    <text class="sub" x="262" y="212">ponto de partida</text>
+                  </svg>
+                  <figcaption>
+                    A branch de feature sai de um commit da <code>main</code>, recebe commits
+                    próprios e volta por um merge. Enquanto ela existe, a <code>main</code> continua
+                    andando — e é por isso que o GitHub recalcula o diff o tempo todo, comparando a
+                    sua branch com o estado atual da base.
+                  </figcaption>
+                </figure>
+
+                <h3>O que acontece dentro do PR</h3>
+
+                <p>
+                  Aberto o Pull Request, quatro coisas passam a acontecer no mesmo lugar. O GitHub
+                  mostra a
+                  <b>comparação</b> entre as branches, arquivo por arquivo. A automação roda os
+                  <b>checks</b>
+                  configurados no repositório e devolve o resultado ali. As pessoas convidadas fazem
+                  a
+                  <b>revisão</b>, comentando linhas específicas ou o PR como um todo. E, quando tudo
+                  o que a equipe exige está satisfeito, alguém aciona o <b>merge</b>.
+                </p>
+
+                <p>
+                  Vale insistir num ponto que confunde quem está começando:
+                  <strong>o PR acompanha a branch</strong>. Todo commit novo que você empurrar para
+                  <code>fix/1-cupom-invalido</code> aparece automaticamente no PR #3, sem precisar
+                  abrir outro. É isso que torna o ciclo "revisa, ajusta, revisa de novo" possível —
+                  e é o assunto da <a href="#novos-commits">seção 12</a>.
+                </p>
+              </section>
+              <section id="criando-pr">
+                <h2><span class="num">Seção 4</span>Criando um Pull Request na prática</h2>
+
+                <p>
+                  O ponto de partida é uma tarefa. Em times que usam GitHub Issues, ela é uma issue;
+                  em times que usam Jira, Linear ou similares, é um ticket, e a issue talvez nem
+                  exista. O que importa é que exista um lugar onde está escrito o que precisa ser
+                  feito e por quê — no nosso caso, a
+                  <a href="https://github.com/AffonsoPaulo/pr-and-code-review/issues/1">issue #1</a
+                  >, que descreve o <code>TypeError</code> lançado quando alguém digita um cupom
+                  inexistente.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/41-issue.webp"
+                    alt="Página da issue número 1 do repositório, com título, descrição explicando o erro, exemplo de reprodução em código e a label bug na barra lateral."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>A issue que origina a tarefa.</b> Ela descreve o que acontece, como
+                    reproduzir e o que era esperado — o mínimo para alguém conseguir trabalhar sem
+                    perguntar.
+                    <span class="look"
+                      >Observe a barra lateral: labels, responsáveis e a seção <b>Development</b>,
+                      que já mostra o Pull Request vinculado. O selo <b>Closed</b> no topo apareceu
+                      sozinho quando o PR #3 foi mergeado, por causa do <code>Closes #1</code> na
+                      descrição.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  Com a branch criada e os commits feitos (o passo a passo está na
+                  <a href="#git-essencial">seção 2</a>), o <code>git push</code> publica a branch. É
+                  aí que o GitHub percebe que há trabalho novo e sugere o próximo passo
+                  <a class="cit" href="#ref-gh-2026j">(GITHUB, 2026j)</a>.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/01-repo-home.webp"
+                    alt="Página inicial do repositório com a faixa amarela indicando que a branch fix/1-cupom-invalido recebeu pushes recentes e o botão verde Compare and pull request."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Página inicial do repositório, logo após o push.</b> A faixa amarela aparece
+                    por alguns minutos depois que uma branch recebe commits novos.
+                    <span class="look"
+                      >Observe: o botão <b>Compare &amp; pull request</b> é um atalho — ele leva
+                      direto ao formulário já com as branches preenchidas. Se a faixa sumiu, o
+                      caminho equivalente é a aba <b>Pull requests</b> →
+                      <b>New pull request</b>.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <h3>Escolher base e compare</h3>
+
+                <p>
+                  A primeira decisão da tela de criação é qual branch recebe o quê. A <b>base</b> é
+                  o destino, a <b>compare</b> é a origem.
+                  <strong>Inverter as duas é um erro comum e silencioso</strong>: o diff
+                  simplesmente aparece vazio ou com as mudanças ao contrário.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/04-compare-selector.webp"
+                    alt="Barra de seleção de branches mostrando base main e compare fix/1-cupom-invalido, com a mensagem Able to merge."
+                    loading="lazy"
+                    width="2500"
+                    height="192"
+                  />
+                  <figcaption>
+                    <b>Seletor de branches no topo do formulário.</b> Os destaques marcam os dois
+                    seletores.
+                    <span class="look"
+                      >Observe a mensagem <b>Able to merge</b> à direita: o GitHub já testou se as
+                      duas branches combinam sem conflito. Quando não combinam, essa mesma área
+                      avisa que haverá conflito — e o PR ainda pode ser aberto, mas não
+                      mergeado.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <h3>Título e descrição</h3>
+
+                <p>
+                  O GitHub preenche o título sozinho a partir do nome da branch, e
+                  <strong>o resultado costuma ser ruim</strong>. "Fix/1 cupom invalido" não diz o
+                  que mudou nem o que deixou de acontecer. Esse campo é a primeira coisa que aparece
+                  na lista de PRs, nas notificações e no histórico depois do merge — vale o esforço
+                  de reescrever.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/05-pr-form.webp"
+                    alt="Formulário Open a pull request com o título preenchido automaticamente como Fix/1 cupom invalido e a descrição preenchida com o template do repositório."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Formulário recém-aberto.</b> O título veio do nome da branch e a descrição
+                    veio do arquivo <code>.github/pull_request_template.md</code> do repositório.
+                    <span class="look"
+                      >Observe: quando existe um template, o GitHub o carrega automaticamente. Os
+                      trechos entre <code>&lt;!-- --&gt;</code> são comentários de Markdown — servem
+                      de instrução para quem escreve e não aparecem no PR publicado.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/06-pr-form-filled.webp"
+                    alt="Mesmo formulário com título descritivo, descrição completa em Markdown e a label bug aplicada na barra lateral."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>O mesmo formulário, preenchido.</b> Título específico, descrição seguindo o
+                    template e a label <code>bug</code> marcada na lateral.
+                    <span class="look"
+                      >Observe a barra lateral: <b>Reviewers</b>, <b>Assignees</b>, <b>Labels</b> e
+                      a seção <b>Development</b>, que lembra de usar palavras-chave como
+                      <code>Closes #1</code> para fechar a issue no merge.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <div role="note" class="note note--tip">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-dica" />
+                    </svg>
+                    Dica
+                  </p>
+                  <p>
+                    Escrever <code>Closes #1</code> na descrição cria um vínculo real: a issue
+                    aparece ligada ao PR e é fechada automaticamente quando o merge acontece. As
+                    palavras-chave aceitas são <code>close</code>, <code>closes</code>,
+                    <code>closed</code>, <code>fix</code>, <code>fixes</code>, <code>fixed</code>,
+                    <code>resolve</code>, <code>resolves</code> e <code>resolved</code>. O
+                    fechamento automático só vale quando o PR aponta para a branch padrão do
+                    repositório; para outra base, o link até existe, mas a issue não fecha sozinha
+                    <a class="cit" href="#ref-gh-2026o">(GITHUB, 2026o)</a>.
+                  </p>
+                </div>
+
+                <h3>Reviewers e labels</h3>
+
+                <p>
+                  Reviewers são as pessoas de quem você está pedindo revisão, e
+                  <strong>só é possível marcar quem tem acesso ao repositório</strong>: a lista
+                  mostra os colaboradores e os times disponíveis. Em uma equipe, esse campo costuma
+                  ser preenchido automaticamente pelo arquivo
+                  <a href="#codeowners">CODEOWNERS</a> ou pela regra interna do time ("quem tocou
+                  nesse módulo por último revisa").
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/08-reviewers-menu.webp"
+                    alt="Menu Reviewers aberto, com o campo de busca de pessoas e o Copilot listado em Suggestions."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>O menu de Reviewers.</b> O campo de busca lista as pessoas e os times com
+                    acesso ao repositório — um Pull Request aceita até 15 reviewers.
+                    <span class="look"
+                      >Observe que pedir revisão é um convite, não uma atribuição: quem foi marcado
+                      recebe a notificação, mas o PR continua avançando se outra pessoa revisar
+                      antes. O Copilot aparece entre as sugestões porque a revisão automática entra
+                      pelo mesmo caminho.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  Labels não mudam nada tecnicamente — <strong>elas servem para filtrar</strong>.
+                  <code>bug</code>, <code>enhancement</code>, <code>documentation</code> e afins
+                  ajudam a responder perguntas como "quantos bugs entraram nesta semana" sem ler PR
+                  por PR. Use as que o repositório já tem; inventar labels novas por conta própria
+                  costuma atrapalhar mais do que ajudar.
+                </p>
+
+                <h3>Criar</h3>
+
+                <p>
+                  O botão final tem duas opções, e a diferença entre elas importa:
+                  <b>Create pull request</b> abre o PR pronto para revisão e já solicita os code
+                  owners; <b>Create draft pull request</b> abre um rascunho, que não pede revisão e
+                  não pode ser mergeado enquanto estiver nesse estado.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/09-draft-dropdown.webp"
+                    alt="Menu aberto ao lado do botão Create pull request, com as opções Create pull request e Create draft pull request e suas descrições."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>As duas formas de criar o PR.</b> O próprio menu explica a diferença: o
+                    rascunho "não solicita revisão dos code owners e não pode ser mergeado".
+                    <span class="look"
+                      >Observe, abaixo, que o formulário já mostra os commits e o diff completo
+                      antes da criação — dá para revisar o próprio trabalho sem sair da
+                      página.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/10-pr-conversation.webp"
+                    alt="Pull Request número 3 criado, mostrando título, estado Open, abas Conversation, Commits, Checks e Files changed, a descrição renderizada e a barra lateral com a label bug e a issue vinculada."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>O Pull Request #3, recém-criado.</b> A descrição em Markdown virou texto
+                    formatado e a issue vinculada aparece em <b>Development</b>, na lateral.
+                    <span class="look"
+                      >Observe a linha abaixo do título: "AffonsoPaulo wants to merge 2 commits into
+                      <code>main</code> from <code>fix/1-cupom-invalido</code>" — é a forma como o
+                      GitHub resume base e compare.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <div role="note" class="note note--bad">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-erro" />
+                    </svg>
+                    Erro comum
+                  </p>
+                  <p>
+                    Abrir o PR e sair para almoçar sem olhar a aba <b>Files changed</b>. Boa parte
+                    dos comentários que um reviewer faria — o <code>console.log</code> esquecido, o
+                    arquivo de configuração local que entrou junto, a indentação bagunçada — você
+                    mesmo encontra lendo o próprio diff antes de pedir revisão.
+                  </p>
+                </div>
+              </section>
+              <section id="bom-pr">
+                <h2><span class="num">Seção 5</span>Como escrever um bom Pull Request</h2>
+
+                <p>
+                  <strong>Quem revisa chega no seu PR sem contexto nenhum.</strong> Não sabe qual
+                  bug você estava perseguindo, não acompanhou a conversa no chat, não viu a tela
+                  quebrada. A descrição existe para reconstruir esse contexto — e a diferença entre
+                  um PR bem escrito e um PR jogado na fila é literalmente
+                  <strong>a diferença entre receber uma revisão hoje ou daqui a três dias</strong>.
+                </p>
+
+                <div class="compare">
+                  <div class="compare__bad">
+                    <h4>Como não fazer</h4>
+                    <span class="code-title">Título</span>
+                    <pre><code>fix bug</code></pre>
+                    <span class="code-title">Descrição</span>
+                    <pre><code>(vazia)</code></pre>
+                    <p class="compare__note">
+                      O reviewer precisa abrir o diff, deduzir qual bug era, adivinhar se aquela
+                      mudança de indentação foi proposital e perguntar no chat como testar. Cada uma
+                      dessas perguntas é uma ida e volta de horas.
+                    </p>
+                  </div>
+                  <div class="compare__good">
+                    <h4>Como fazer</h4>
+                    <span class="code-title">Título</span>
+                    <pre><code>Corrige queda do checkout ao
+informar cupom inválido</code></pre>
+                    <span class="code-title">Descrição</span>
+                    <pre><code>## Contexto
+A issue #1 relata que o checkout
+inteiro cai quando a pessoa digita
+um cupom que não existe...</code></pre>
+                    <p class="compare__note">
+                      O título diz o efeito para quem usa o sistema. A descrição explica a causa,
+                      lista o que mudou, ensina a testar e admite o que ficou de fora.
+                    </p>
+                  </div>
+                </div>
+
+                <p>
+                  O título merece atenção especial porque <strong>ele sobrevive ao PR</strong>. Com
+                  <i>squash and merge</i>, o título vira a mensagem do commit na <code>main</code>;
+                  em qualquer estratégia, ele é o que aparece na lista de PRs, no changelog e na
+                  busca. "Corrige queda do checkout ao informar cupom inválido" responde sozinho o
+                  que mudou. "fix bug" obriga a abrir o diff.
+                </p>
+
+                <h3>Um template que funciona</h3>
+
+                <p>
+                  Colocar um arquivo <code>.github/pull_request_template.md</code> no repositório
+                  faz o GitHub preencher a descrição automaticamente a cada PR novo
+                  <a class="cit" href="#ref-gh-2026k">(GITHUB, 2026k)</a>. É o que acontece no
+                  repositório de exemplo, e o formulário da <a href="#criando-pr">seção 4</a> mostra
+                  o resultado:
+                </p>
+
+                <span class="code-title">.github/pull_request_template.md</span>
+                <pre><code>## Contexto
+
+&lt;!-- Por que essa mudança é necessária? O que estava acontecendo antes? --&gt;
+
+## O que foi alterado
+
+-
+-
+
+## Como testar
+
+1.
+2.
+
+## Riscos e pontos de atenção
+
+&lt;!-- O que pode quebrar? O que o reviewer deveria olhar com mais cuidado? --&gt;
+
+## Issue relacionada
+
+Closes #</code></pre>
+
+                <p>
+                  Cada seção resolve um problema concreto de quem revisa. O <b>contexto</b> evita a
+                  pergunta "por que estamos mexendo nisso?" e permite avaliar se a solução ataca a
+                  causa certa. A lista do <b>que foi alterado</b> dá um mapa do diff — quando alguém
+                  abre doze arquivos modificados, saber que dez deles são consequência mecânica de
+                  uma renomeação muda completamente o tempo de revisão. O <b>como testar</b> permite
+                  verificar de fato, em vez de só ler; e é onde ficam evidentes os casos que você
+                  não cobriu.
+                </p>
+
+                <p>
+                  A seção de <b>riscos</b>
+                  <strong>é a que mais separa gente experiente de gente iniciante</strong>. Escrever
+                  "o cupom inválido agora falha em silêncio; quem chama não distingue 'não tinha
+                  cupom' de 'cupom recusado'" <em>não</em> enfraquece o PR — pelo contrário, mostra
+                  que você pensou no limite da sua própria solução e direciona a atenção do reviewer
+                  para onde ela rende mais. Foi exatamente esse parágrafo que gerou o comentário
+                  mais útil da revisão do PR #3.
+                </p>
+
+                <div role="note" class="note note--good">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-boa" />
+                    </svg>
+                    Boa prática
+                  </p>
+                  <p>
+                    Quando a mudança é visual, screenshots de antes e depois valem mais do que
+                    qualquer parágrafo. Quando é de API, um exemplo de requisição e resposta. Quando
+                    é de performance, o número antes e o número depois. O objetivo é sempre o mesmo:
+                    permitir que a pessoa avalie sem precisar rodar o projeto.
+                  </p>
+                </div>
+
+                <p>
+                  Vale lembrar que a descrição não substitui boas mensagens de commit, e vice-versa.
+                  A mensagem de commit explica uma mudança específica; a descrição do PR explica o
+                  conjunto. No PR #3, o commit
+                  <code>78c0e07</code> tem no corpo a justificativa da injeção da data — quem fizer
+                  <code>git log</code> daqui a um ano encontra o raciocínio sem precisar abrir o
+                  navegador.
+                </p>
+              </section>
+
+              <section id="o-que-e-code-review">
+                <h2><span class="num">Seção 6</span>O que é Code Review</h2>
+
+                <p>
+                  Code Review é a leitura crítica de uma mudança proposta por outra pessoa, antes
+                  que ela entre no código principal. A definição é simples; o que costuma estar
+                  errado é a expectativa. Quem começa imagina que revisar é caçar bugs, e conclui
+                  que não tem competência para revisar o código de alguém mais experiente.
+                  <strong>Caçar bugs é só uma das coisas que acontecem ali</strong>, e nem é a mais
+                  frequente.
+                </p>
+
+                <p>
+                  Na prática, uma revisão responde a várias perguntas ao mesmo tempo. A solução
+                  resolve o problema que a tarefa descreve? O código vai ser compreensível daqui a
+                  seis meses, por alguém que não participou desta conversa? Existe algum caso de
+                  borda não tratado — nulo, lista vazia, timeout, concorrência? Os testes cobrem o
+                  comportamento novo ou só o caminho feliz? A mudança segue os padrões que este
+                  projeto já adota, mesmo quando eles não são os que você prefere? Há algo aqui com
+                  implicação de segurança — dado sensível em log, entrada não validada, permissão
+                  que ficou aberta?
+                </p>
+
+                <p>
+                  Existe ainda um objetivo que não aparece em nenhum checklist e é talvez o mais
+                  valioso a longo prazo: <strong>espalhar conhecimento</strong>. Quando você revisa
+                  o módulo de pagamentos, você aprende o módulo de pagamentos. Times que revisam bem
+                  não têm aquela pessoa insubstituível que é a única capaz de mexer em determinada
+                  parte do sistema — e, quando ela sai de férias, o trabalho continua.
+                </p>
+
+                <div role="note" class="note note--review">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-review" />
+                    </svg>
+                    Code Review
+                  </p>
+                  <p>
+                    Revisar não é aprovar ou reprovar uma pessoa. É avaliar uma proposta de mudança,
+                    com a hipótese de que quem escreveu tinha bons motivos e informações que você
+                    talvez não tenha. Um comentário que começa com "por que você optou por…"
+                    descobre mais coisa do que um que começa com "isso está errado".
+                  </p>
+                </div>
+
+                <p>
+                  <strong>O lado humano não é um detalhe.</strong> Um PR é trabalho de alguém,
+                  muitas vezes de vários dias, exposto publicamente para outras pessoas comentarem.
+                  Times onde a revisão é hostil produzem PRs defensivos, gigantes e raros — porque
+                  ninguém quer passar por aquilo com frequência. Times onde a revisão é específica,
+                  respeitosa e rápida produzem PRs pequenos e constantes, que é exatamente o que se
+                  quer.
+                </p>
+
+                <p>
+                  Uma última distinção que economiza discussão:
+                  <strong>revisão não é controle de qualidade automatizado</strong>. Formatação,
+                  lint, tipos e testes são trabalho de máquina, e devem estar no CI (veja a
+                  <a href="#ci">seção 15</a>). Reviewer humano que gasta a atenção apontando ponto e
+                  vírgula está fazendo mal o trabalho de duas pessoas: o dele e o do linter.
+                </p>
+              </section>
+              <section id="revisando">
+                <h2><span class="num">Seção 7</span>Fazendo um Code Review no GitHub</h2>
+
+                <p>
+                  A página de um Pull Request tem quatro abas principais, e cada uma responde a uma
+                  pergunta diferente (repositórios com recursos de segurança ligados podem exibir
+                  outras).
+                  <b>Conversation</b> traz a descrição, a linha do tempo de eventos e todos os
+                  comentários — é por onde se começa, para entender a intenção.
+                  <b>Commits</b> mostra os commits da branch, um a um. <b>Checks</b> traz o
+                  resultado detalhado da automação. <b>Files changed</b> é o diff, onde a revisão de
+                  fato acontece.
+                </p>
+
+                <p>
+                  <strong>Comece pela descrição, não pelo código.</strong> Sem saber o que a mudança
+                  deveria fazer, você só consegue avaliar estilo. Depois passe à aba
+                  <b>Commits</b> se o PR for grande: commits bem separados contam a história na
+                  ordem em que o autor pensou, e revisar por etapas é mais fácil do que encarar
+                  trezentas linhas de uma vez.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/43-pr-commits.webp"
+                    alt="Aba Commits do Pull Request listando quatro commits com mensagem, autor, horário, resultado dos checks e identificador de cada um."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>A aba Commits do PR #3.</b> Cada linha traz a mensagem, quem fez, o resultado
+                    dos checks naquele commit e o identificador.
+                    <span class="look"
+                      >Observe o terceiro item, "Apply suggestion from @AffonsoPaulo", com a
+                      etiqueta <b>Verified</b>: ele foi criado pelo próprio GitHub ao aplicar uma
+                      sugestão de revisão, e por isso vem assinado.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <h3>Lendo o diff</h3>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/13-diff-anatomy.webp"
+                    alt="Aba Files changed mostrando o diff de src/cupom.js com uma linha removida em vermelho e três adicionadas em verde, além da árvore de arquivos à esquerda e do contador zero de um visualizado."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Anatomia de um diff.</b> Linhas com <code>-</code> em fundo avermelhado
+                    saíram; linhas com <code>+</code> em fundo esverdeado entraram. As duas colunas
+                    de números mostram a numeração antes e depois da mudança.
+                    <span class="look"
+                      >Observe: <b>0 / 1 viewed</b> e a caixa <b>Viewed</b> ao lado do arquivo.
+                      Marcar um arquivo como visto colapsa ele e ajuda a não se perder em PRs com
+                      muitos arquivos — se ele mudar depois, o GitHub desmarca sozinho.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  O cabeçalho <code>@@ -5,7 +5,9 @@</code> indica qual pedaço do arquivo está sendo
+                  mostrado: a partir da linha 5, sete linhas na versão antiga viraram nove na nova.
+                  Entre os blocos alterados o GitHub esconde o código que não mudou; clicar nas
+                  setas expande o contexto, o que costuma ser necessário para julgar se uma mudança
+                  faz sentido no fluxo em volta dela.
+                </p>
+
+                <p>
+                  O ícone de engrenagem no topo permite alternar entre <b>Unified</b> (antes e
+                  depois intercalados) e <b>Split</b> (lado a lado), além de ignorar diferenças de
+                  espaço em branco — opção que salva a revisão de um PR cuja indentação inteira
+                  mudou.
+                </p>
+
+                <h3>Comentando em uma linha</h3>
+
+                <p>
+                  Passar o mouse sobre uma linha do diff revela um botão azul de comentário na
+                  margem. Para comentar em várias linhas de uma vez, clique no número da primeira e
+                  arraste (ou use <kbd>Shift</kbd> + clique) até a última
+                  <a class="cit" href="#ref-gh-2026p">(GITHUB, 2026p)</a>.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/14-hover-add-comment.webp"
+                    alt="Linha do diff com o cursor sobre ela, exibindo o botão azul de adicionar comentário na margem esquerda, destacado em vermelho."
+                    loading="lazy"
+                    width="2258"
+                    height="462"
+                  />
+                  <figcaption>
+                    <b>O botão aparece só no hover.</b> Ele fica na margem, entre o número da linha
+                    e o código.
+                    <span class="look"
+                      >Observe que o comentário fica ancorado nessa linha específica — é isso que
+                      diferencia um comentário de revisão de um comentário geral no PR.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/16-comment-filled.webp"
+                    alt="Caixa de comentário aberta sobre a linha 11 com um texto escrito e os botões Cancel, Comment e Start a review, este último destacado."
+                    loading="lazy"
+                    width="2056"
+                    height="736"
+                  />
+                  <figcaption>
+                    <b>A caixa de comentário e a escolha que importa.</b> <b>Comment</b> publica
+                    aquele comentário isolado na hora; <b>Start a review</b> guarda o comentário
+                    como pendente e inicia uma revisão.
+                    <span class="look"
+                      >Prefira <b>Start a review</b> quando pretende deixar mais de um comentário: o
+                      autor recebe uma notificação com tudo junto, em vez de uma para cada
+                      comentário.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/19-review-pending.webp"
+                    alt="Aba Files changed com um comentário marcado como Pending e o botão Submit review indicando três comentários acumulados."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Comentários pendentes.</b> A etiqueta <b>Pending</b> indica que aquele
+                    comentário ainda é visível só para você. O contador no botão
+                    <b>Submit review</b> mostra quantos estão acumulados.
+                    <span class="look"
+                      >Observe a árvore de arquivos à esquerda, com o número de comentários por
+                      arquivo — útil para conferir se você cobriu tudo antes de enviar.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  Enquanto a revisão está pendente, dá para editar e apagar os comentários à
+                  vontade. Nada disso chega ao autor antes de você clicar em <b>Submit review</b> e
+                  escolher o tipo da revisão — que é o assunto da próxima seção.
+                </p>
+
+                <h3>Threads e resolução</h3>
+
+                <p>
+                  Cada comentário em linha vira uma <b>thread</b>: o autor responde abaixo, vocês
+                  conversam ali, e o assunto fica ancorado ao trecho de código que o originou.
+                  Quando o ponto está encerrado, alguém clica em <b>Resolve conversation</b> e a
+                  thread colapsa, tirando ruído da página sem apagar nada — o botão
+                  <b>Show resolved</b> reabre.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/25-resolve-conversation.webp"
+                    alt="Thread de comentário na aba Conversation com a etiqueta Outdated, o comentário original, a resposta do autor citando o commit e o botão Resolve conversation."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Uma thread completa.</b> Comentário, resposta do autor citando o commit que
+                    resolveu (<code>78c0e07</code>) e o botão para encerrar.
+                    <span class="look"
+                      >Observe a etiqueta <b>Outdated</b> no cabeçalho: o código daquela linha mudou
+                      depois do comentário, então o GitHub avisa que o trecho citado não é mais o
+                      atual.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <div role="note" class="note note--warn">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-atencao" />
+                    </svg>
+                    Atenção
+                  </p>
+                  <p>
+                    Quem resolve a conversa, por convenção, é quem a abriu — ou o autor, depois de
+                    responder. Resolver o próprio comentário do reviewer sem responder nem corrigir
+                    é <strong>uma forma silenciosa de ignorar a revisão</strong>, e times percebem
+                    isso rápido. Alguns repositórios inclusive exigem todas as conversas resolvidas
+                    para liberar o merge (veja a <a href="#protecoes">seção 16</a>).
+                  </p>
+                </div>
+              </section>
+
+              <section id="decisao">
+                <h2><span class="num">Seção 8</span>Approve, Comment e Request changes</h2>
+
+                <p>
+                  Ao enviar a revisão, o GitHub pede que você escolha entre três opções. Elas não
+                  são variações de tom:
+                  <strong>cada uma tem um efeito diferente no estado do PR</strong>
+                  <a class="cit" href="#ref-gh-2026e">(GITHUB, 2026e)</a>.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/20-submit-review-dialog.webp"
+                    alt="Caixa de diálogo Finish your review com campo de texto e as três opções Comment, Approve e Request changes, as duas últimas desabilitadas com o aviso de que autores não podem aprovar o próprio PR."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>A caixa <i>Finish your review</i>.</b> O campo de texto no topo é o resumo da
+                    revisão; abaixo, a decisão; embaixo, a lista de comentários pendentes para
+                    conferência.
+                    <span class="look"
+                      >Observe que <b>Approve</b> e <b>Request changes</b> estão desabilitados aqui,
+                      com a explicação "Pull request authors can't approve their own pull requests".
+                      Como este PR foi aberto pela mesma conta que está revisando, só a opção
+                      <b>Comment</b> ficou disponível.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Opção</th>
+                        <th scope="col">O que significa</th>
+                        <th scope="col">Efeito prático</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><b>Comment</b></td>
+                        <td>Feedback sem tomar posição sobre o merge.</td>
+                        <td>
+                          Não aprova nem bloqueia. Use para dúvidas, sugestões opcionais ou quando
+                          você revisou só uma parte.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Approve</b></td>
+                        <td>Na sua avaliação, a mudança está pronta para entrar.</td>
+                        <td>
+                          Conta como aprovação para as regras do repositório. É o que destrava o
+                          merge quando há exigência de revisões.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Request changes</b></td>
+                        <td>Há algo que precisa ser resolvido antes do merge.</td>
+                        <td>
+                          Bloqueia o merge em repositórios protegidos até que você (ou outra pessoa
+                          com acesso) reavalie.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p>
+                  Na prática, a fronteira entre <b>Comment</b> e <b>Request changes</b> é onde os
+                  times mais divergem. Um critério que funciona bem: use
+                  <b>Request changes</b> quando existe
+                  <strong>algo que você não aceitaria ver em produção</strong> — um bug, um
+                  vazamento de dado, uma regressão de comportamento. Para preferências de estilo,
+                  refatorações que você faria diferente ou ideias para depois,
+                  <b>Comment</b> comunica a mesma coisa sem parar a fila de ninguém.
+                </p>
+
+                <p>
+                  Há também o <b>Approve com ressalvas</b>, que não é um botão e sim uma
+                  <em>prática</em>: aprovar e deixar um comentário dizendo "aprovo; só ajuste o nome
+                  daquela variável antes de mergear". Funciona bem em times pequenos e com confiança
+                  estabelecida, e mal em times onde ninguém lê o comentário depois da aprovação.
+                </p>
+
+                <div role="note" class="note note--market">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-mercado" />
+                    </svg>
+                    No mercado
+                  </p>
+                  <p>
+                    As regras variam bastante. Alguns times tratam <b>Request changes</b> como
+                    normal e frequente; outros consideram um gesto forte, reservado a problemas
+                    sérios, e preferem resolver o resto conversando. Em muitos lugares existe a
+                    convenção de prefixar comentários opcionais com <code>nit:</code> (de
+                    <i>nitpick</i>) justamente para deixar claro que não bloqueiam. Pergunte qual é
+                    o costume do time nas primeiras semanas — é uma pergunta que ninguém acha ruim.
+                  </p>
+                </div>
+              </section>
+
+              <section id="comentarios">
+                <h2><span class="num">Seção 9</span>Como escrever bons comentários de revisão</h2>
+
+                <p>
+                  <strong>Um comentário útil costuma ter três partes:</strong> o que você observou,
+                  por que isso importa e o que você sugere. Comentários ruins normalmente têm só a
+                  primeira — e, muitas vezes, nem isso.
+                </p>
+
+                <div class="compare">
+                  <div class="compare__bad">
+                    <h4>Pouco útil</h4>
+                    <blockquote><p>Isso está errado.</p></blockquote>
+                    <p class="compare__note">
+                      O autor não sabe o que está errado, por que está errado nem o que fazer. A
+                      resposta provável é "errado como?", e vocês perderam um dia.
+                    </p>
+                  </div>
+                  <div class="compare__good">
+                    <h4>Útil</h4>
+                    <blockquote>
+                      <p>
+                        Esse trecho lança exceção quando <code>user</code> é <code>null</code> —
+                        acontece no fluxo de convite, em que o registro existe antes do usuário. Dá
+                        para validar antes de acessar <code>user.id</code>?
+                      </p>
+                    </blockquote>
+                    <p class="compare__note">
+                      Observação concreta, cenário em que acontece e um caminho de solução. O autor
+                      consegue agir sem responder nada.
+                    </p>
+                  </div>
+                </div>
+
+                <p>
+                  <strong>Deixar explícito o tipo do comentário</strong> economiza mais tempo do que
+                  qualquer outra convenção. Quando o autor abre dez comentários e não sabe quais
+                  bloqueiam, ele trata todos como bloqueantes — ou, pior, nenhum. Um prefixo curto
+                  resolve:
+                </p>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Exemplo de abertura</th>
+                        <th scope="col">Bloqueia?</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><b>Bug</b></td>
+                        <td>
+                          "Isso quebra quando a lista vem vazia: <code>reduce</code> sem valor
+                          inicial lança."
+                        </td>
+                        <td>Sim</td>
+                      </tr>
+                      <tr>
+                        <td><b>Segurança</b></td>
+                        <td>
+                          "O token está indo para o log em <code>catch</code>. Dá para logar só o
+                          id?"
+                        </td>
+                        <td>Sim</td>
+                      </tr>
+                      <tr>
+                        <td><b>Testes</b></td>
+                        <td>
+                          "O caminho de erro novo não tem teste — dá para cobrir o caso do cupom
+                          vencido?"
+                        </td>
+                        <td>Geralmente</td>
+                      </tr>
+                      <tr>
+                        <td><b>Arquitetura</b></td>
+                        <td>
+                          "Essa regra está na camada de rota; o resto do projeto mantém regra no
+                          serviço."
+                        </td>
+                        <td>Depende</td>
+                      </tr>
+                      <tr>
+                        <td><b>Performance</b></td>
+                        <td>
+                          "Essa consulta roda dentro do laço; com 500 itens são 500 idas ao banco."
+                        </td>
+                        <td>Depende</td>
+                      </tr>
+                      <tr>
+                        <td><b>Legibilidade</b></td>
+                        <td>"<code>d</code> é data ou desconto? Um nome inteiro aqui ajudaria."</td>
+                        <td>Não</td>
+                      </tr>
+                      <tr>
+                        <td><b>Dúvida</b></td>
+                        <td>
+                          "Por que 300ms e não o valor do config? Tem algum motivo que eu não
+                          conheço?"
+                        </td>
+                        <td>Não</td>
+                      </tr>
+                      <tr>
+                        <td><b>Sugestão (nit)</b></td>
+                        <td>
+                          "nit: dá para trocar por <code>Object.entries</code>, mas do jeito que
+                          está funciona."
+                        </td>
+                        <td>Não</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p>
+                  O comentário mais produtivo da revisão do PR #3 seguiu essa fórmula: apontou que
+                  <code>new Date()</code> dentro de <code>estaValido</code> prendia a regra ao
+                  relógio da máquina, explicou o cenário concreto em que isso morderia (o cupom
+                  <code>BLACK25</code> vence em 30/11/2026) e propôs uma alternativa específica. O
+                  autor implementou sem precisar de uma única mensagem de ida e volta.
+                </p>
+
+                <h3>O tom também é técnico</h3>
+
+                <p>
+                  "Você não entendeu o requisito" descreve a pessoa; "essa validação aceita datas
+                  futuras, e o requisito na issue pede só passadas" descreve o problema — e é o
+                  segundo que leva à correção. Perguntar quando você não tem certeza também evita
+                  gastar credibilidade à toa;
+                  <strong>não raro a resposta revela uma restrição real que você desconhecia</strong
+                  >.
+                </p>
+
+                <p class="pull">
+                  Criticar o código e não a pessoa não é cortesia vazia: é precisão.
+                </p>
+
+                <p>
+                  Reconhecer o que ficou bom parece supérfluo <strong>e não é</strong>. Um "boa, não
+                  tinha pensado em extrair essa função" custa uma linha, ensina outras pessoas que
+                  leem o PR e equilibra uma conversa que, por natureza, é uma lista de problemas.
+                </p>
+
+                <div role="note" class="note note--bad">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-erro" />
+                    </svg>
+                    Erro comum
+                  </p>
+                  <p>
+                    Transformar a revisão em um pedido de reescrita completa porque você faria
+                    diferente. Se a solução do autor funciona, está testada e segue os padrões do
+                    projeto, "eu teria feito de outro jeito" não é motivo para bloquear. Guarde esse
+                    capital para quando houver um problema de verdade.
+                  </p>
+                </div>
+              </section>
+
+              <section id="sugestoes">
+                <h2><span class="num">Seção 10</span>Sugestões de código</h2>
+
+                <p>
+                  Quando a mudança que você quer propor cabe em poucas linhas,
+                  <strong>o GitHub permite escrever o código exato em vez de descrevê-lo</strong>. É
+                  o recurso de <i>suggested changes</i>: dentro de um comentário em linha, um bloco
+                  de código marcado como <code>suggestion</code> vira uma proposta aplicável com um
+                  clique.
+                </p>
+
+                <span class="code-title">Markdown do comentário</span>
+                <pre><code>O nome do teste não diz qual é a condição de "fora da validade"...
+
+```suggestion
+test('cupom vencido (VOLTASAS10, 28/02/2026) não aplica desconto', () =&gt; {
+```</code></pre>
+
+                <p>
+                  O conteúdo do bloco substitui exatamente as linhas comentadas. O botão de sugestão
+                  na barra da caixa de comentário já insere o bloco com a linha original preenchida
+                  — mais seguro do que digitar à mão, porque a indentação vem correta
+                  <a class="cit" href="#ref-gh-2026p">(GITHUB, 2026p)</a>.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/18-suggestion-form.webp"
+                    alt="Caixa de comentário aberta na linha 30 do arquivo de teste, com a explicação escrita e, abaixo, um bloco marcado como suggestion contendo a linha proposta."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>A sugestão sendo escrita.</b> Explicação primeiro, bloco de código depois — a
+                    ordem importa, porque é a explicação que diz ao autor se vale aplicar.
+                    <span class="look"
+                      >Observe o botão <b>Add review comment</b>: como já havia uma revisão em
+                      andamento, o texto do botão mudou de "Start a review" para adicionar à revisão
+                      existente.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/22-suggested-change.webp"
+                    alt="Comentário de revisão com um bloco Suggested change mostrando a linha antiga em vermelho e a sugerida em verde, e os botões Add to batch e Commit suggestions."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Como a sugestão aparece para o autor.</b> O GitHub renderiza o bloco como um
+                    mini-diff, com a linha atual e a proposta.
+                    <span class="look"
+                      >Observe os dois botões: <b>Commit suggestions</b> aplica agora;
+                      <b>Add to batch</b> acumula várias sugestões do PR para aplicar todas em um
+                      único commit — útil quando o reviewer deixou seis correções pequenas.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/23-commit-suggestion.webp"
+                    alt="Modal Commit suggestions com o campo de mensagem preenchido automaticamente como Apply suggestion from at AffonsoPaulo e um campo de descrição estendida."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Aplicar gera um commit de verdade.</b> A mensagem padrão credita quem
+                    sugeriu, e o commit entra na branch do PR como qualquer outro.
+                    <span class="look"
+                      >Observe que isso significa que o CI roda de novo — aplicar cinco sugestões
+                      separadas dispara cinco execuções. Daí a utilidade do
+                      <b>Add to batch</b>.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  <strong>Sugestões funcionam bem para correções pequenas e objetivas</strong>: um
+                  nome melhor, um typo em texto visível, uma condição invertida, um
+                  <code>const</code> no lugar de <code>let</code>. Funcionam mal quando a mudança
+                  envolve mais de um arquivo, exige contexto que não cabe em três linhas ou merece
+                  discussão — nesses casos, um comentário explicando o raciocínio rende mais do que
+                  um bloco de código pronto que o autor aplica sem entender.
+                </p>
+              </section>
+              <section id="recebendo">
+                <h2><span class="num">Seção 11</span>Recebendo um Code Review</h2>
+
+                <p>
+                  Receber quinze comentários no primeiro PR assusta, e a leitura mais comum — "então
+                  meu código é ruim" — <strong>quase sempre está errada</strong>. Volume de
+                  comentários costuma dizer mais sobre o tamanho do diff e sobre a cultura do time
+                  do que sobre a qualidade do que você escreveu. Reviewers experientes comentam
+                  bastante porque conhecem o histórico do sistema, não porque estão procurando
+                  defeito.
+                </p>
+
+                <p>
+                  <strong>O primeiro passo é ler tudo antes de responder qualquer coisa.</strong>
+                  Comentários isolados parecem exigências; lidos em conjunto, eles se organizam em
+                  três grupos: o que é bug ou risco real, o que é sugestão de melhoria e o que é
+                  dúvida. Esse é o grupo que define a ordem do seu trabalho.
+                </p>
+
+                <p>
+                  Para cada comentário, existem basicamente três respostas legítimas. Você concorda
+                  e corrige — e aí responda dizendo em qual commit, como no exemplo do PR #3
+                  ("Ajustado em <code>78c0e07</code>"). Você concorda que é um problema, mas acha
+                  que ele não pertence a este PR — e aí explique, abra uma issue e cite o número;
+                  foi o que aconteceu com a
+                  <a href="https://github.com/AffonsoPaulo/pr-and-code-review/issues/4">issue #4</a
+                  >. Ou você discorda — e aí apresente o motivo técnico, não a sua preferência.
+                </p>
+
+                <div role="note" class="note note--tip">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-dica" />
+                    </svg>
+                    Dica
+                  </p>
+                  <p>
+                    Discordar é normal e esperado.
+                    <strong>O que muda o resultado é a forma:</strong> "não vou mudar" encerra a
+                    conversa; "considerei extrair isso, mas as duas chamadas têm ciclos de vida
+                    diferentes e a abstração ficaria vazando parâmetro — prefiro manter separado, o
+                    que você acha?" convida a pessoa a decidir junto. O guia de code review do
+                    Google recomenda exatamente essa ordem: buscar consenso com quem revisou antes
+                    de escalar, e nunca responder no calor do momento
+                    <a class="cit" href="#ref-google-2026a">(GOOGLE, 2026a)</a>. Se o impasse
+                    continuar depois de duas trocas, leve para uma conversa síncrona: comentário de
+                    PR é péssimo meio para debate longo.
+                  </p>
+                </div>
+
+                <p>
+                  Quando terminar os ajustes, responda as threads, resolva as que ficaram encerradas
+                  e peça nova revisão. Na barra lateral, ao lado do nome de cada reviewer, existe um
+                  ícone de recarregar que dispara um novo pedido de revisão
+                  <a class="cit" href="#ref-gh-2026n">(GITHUB, 2026n)</a> — mais eficaz do que
+                  esperar que a pessoa perceba sozinha que o PR mudou.
+                </p>
+
+                <div role="note" class="note note--good">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-boa" />
+                    </svg>
+                    Boa prática
+                  </p>
+                  <p>
+                    Responda todos os comentários, mesmo os que você só aceitou. Um <i>emoji</i> de
+                    joinha não conta: quem revisou precisa saber se você concordou, discordou ou não
+                    viu. Threads abertas sem resposta deixam o PR parado sem que ninguém saiba por
+                    quê.
+                  </p>
+                </div>
+              </section>
+
+              <section id="novos-commits">
+                <h2><span class="num">Seção 12</span>O que acontece quando chegam novos commits</h2>
+
+                <p>
+                  O Pull Request não é uma fotografia da branch no momento em que foi aberto:
+                  <strong>ele aponta para a branch e acompanha o que acontece nela</strong>.
+                  Qualquer commit novo empurrado para <code>fix/1-cupom-invalido</code> aparece no
+                  PR #3 automaticamente, atualizando o diff, disparando o CI de novo e avisando quem
+                  está participando da conversa.
+                </p>
+
+                <ol class="flowsteps">
+                  <li><b>PR aberto</b></li>
+                  <li><b>Comentário do reviewer</b></li>
+                  <li><b>Commit local</b></li>
+                  <li><b>git push</b></li>
+                  <li class="is-key"><b>PR atualizado</b></li>
+                  <li class="is-auto"><b>CI roda de novo</b></li>
+                  <li><b>Nova revisão</b></li>
+                </ol>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/30-timeline-commits.webp"
+                    alt="Linha do tempo do Pull Request mostrando o evento AffonsoPaulo and others added 2 commits, com os dois commits listados e seus identificadores."
+                    loading="lazy"
+                    width="2020"
+                    height="370"
+                  />
+                  <figcaption>
+                    <b>Como os commits novos aparecem na linha do tempo.</b> O GitHub agrupa os
+                    pushes em eventos e lista os commits com seus identificadores.
+                    <span class="look"
+                      >Observe o "and others": um dos commits foi criado pelo próprio GitHub ao
+                      aplicar a sugestão de código, então a autoria do push tem mais de uma pessoa
+                      envolvida.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  Isso tem duas consequências práticas. A primeira: os comentários antigos não
+                  somem, mas podem receber a etiqueta <b>Outdated</b> quando o trecho citado deixa
+                  de existir na versão atual — o GitHub mantém o contexto histórico e sinaliza que
+                  ele envelheceu. A segunda: dependendo das regras do repositório, aprovações
+                  anteriores podem ser descartadas a cada push novo (a opção
+                  <i>dismiss stale reviews</i>, que veremos na <a href="#protecoes">seção 16</a>),
+                  obrigando uma nova rodada de revisão.
+                </p>
+
+                <div role="note" class="note note--warn">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-atencao" />
+                    </svg>
+                    Atenção
+                  </p>
+                  <p>
+                    <strong
+                      >Evite <code>git push --force</code> em uma branch que já está em
+                      revisão.</strong
+                    >
+                    Reescrever o histórico quebra a âncora dos comentários existentes e faz o
+                    reviewer perder o rastro do que já tinha olhado. Se for inevitável — um
+                    <i>rebase</i> pedido pelo time, por exemplo — use
+                    <code>--force-with-lease</code> e avise no PR.
+                  </p>
+                </div>
+              </section>
+
+              <section id="merge">
+                <h2><span class="num">Seção 13</span>Merge: as três estratégias</h2>
+
+                <p>
+                  Com tudo aprovado e os checks verdes, resta escolher como os commits entram na
+                  branch de destino. O botão de merge tem um menu com as três estratégias que o
+                  GitHub oferece — e o repositório pode habilitar apenas algumas delas nas
+                  configurações.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/29-merge-methods.webp"
+                    alt="Menu aberto no botão de merge com as opções Create a merge commit, Squash and merge e Rebase and merge, cada uma com sua descrição."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>O menu de estratégias.</b> As descrições do próprio GitHub já resumem o
+                    efeito de cada uma sobre os quatro commits deste PR.
+                    <span class="look"
+                      >Observe, acima, a caixa de status: "All checks have passed" e "No conflicts
+                      with base branch". Só depois dessas duas condições o botão fica verde.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure class="diagram">
+                  <svg viewBox="0 0 900 340" role="img" aria-labelledby="dg2-title">
+                    <title id="dg2-title">
+                      Comparação do histórico resultante de merge commit, squash and merge e rebase
+                      and merge
+                    </title>
+                    <rect class="bg" x="0" y="0" width="100%" height="100%" />
+
+                    <text class="label" x="0" y="66">Merge commit</text>
+                    <path class="line-main" d="M200 62 H 760" />
+                    <path
+                      class="line-feat"
+                      d="M320 62 C 355 62, 355 20, 390 20 H 520 C 555 20, 555 62, 590 62"
+                    />
+                    <circle class="dot-main" cx="230" cy="62" r="6" />
+                    <circle class="dot-main" cx="275" cy="62" r="6" />
+                    <circle class="dot-main" cx="320" cy="62" r="6" />
+                    <circle class="dot-feat" cx="430" cy="20" r="6" />
+                    <circle class="dot-feat" cx="490" cy="20" r="6" />
+                    <circle class="dot-merge" cx="590" cy="62" r="7" />
+                    <text class="sub" x="200" y="92">
+                      preserva os commits da branch e marca o ponto de junção
+                    </text>
+
+                    <text class="label" x="0" y="176">Squash and merge</text>
+                    <path class="line-main" d="M200 172 H 760" />
+                    <path
+                      class="line-feat"
+                      d="M320 172 C 355 172, 355 130, 390 130 H 520"
+                      stroke-dasharray="5 5"
+                      opacity=".4"
+                    />
+                    <circle class="dot-main" cx="230" cy="172" r="6" />
+                    <circle class="dot-main" cx="275" cy="172" r="6" />
+                    <circle class="dot-main" cx="320" cy="172" r="6" />
+                    <circle class="dot-feat" cx="430" cy="130" r="6" opacity=".4" />
+                    <circle class="dot-feat" cx="490" cy="130" r="6" opacity=".4" />
+                    <circle class="dot-merge" cx="590" cy="172" r="7" />
+                    <text class="sub" x="200" y="202">
+                      um único commit novo; os originais ficam só na página do PR
+                    </text>
+
+                    <text class="label" x="0" y="286">Rebase and merge</text>
+                    <path class="line-main" d="M200 282 H 760" />
+                    <circle class="dot-main" cx="230" cy="282" r="6" />
+                    <circle class="dot-main" cx="275" cy="282" r="6" />
+                    <circle class="dot-main" cx="320" cy="282" r="6" />
+                    <circle class="dot-feat" cx="375" cy="282" r="6" />
+                    <circle class="dot-feat" cx="430" cy="282" r="6" />
+                    <text class="sub" x="200" y="312">
+                      os commits são recriados em sequência, sem ponto de junção
+                    </text>
+                  </svg>
+                  <figcaption>
+                    Os círculos vazios com o contorno de destaque são os commits da branch de
+                    feature; os cinzas, os que já estavam na <code>main</code>. No <i>squash</i>, os
+                    originais continuam existindo na página do PR, mas não no histórico da
+                    <code>main</code>.
+                  </figcaption>
+                </figure>
+
+                <h3>Merge commit</h3>
+
+                <p>
+                  Todos os commits da branch entram na <code>main</code> e um commit extra registra
+                  a junção. O histórico fica fiel ao que aconteceu: dá para ver que aqueles cinco
+                  commits foram feitos juntos, em uma branch, e integrados de uma vez. O custo é um
+                  grafo mais cheio — em um repositório movimentado, o <code>git log</code> vira uma
+                  trança difícil de ler.
+                </p>
+
+                <h3>Squash and merge</h3>
+
+                <p>
+                  Todos os commits da branch viram um só na <code>main</code>.
+                  <strong>É uma escolha frequente em times de produto</strong>, porque o histórico
+                  da branch principal passa a ter uma entrada por mudança entregue, e não por passo
+                  intermediário — "wip", "ajusta teste", "corrige lint" desaparecem. Foi o que
+                  usamos no PR #3: quatro commits viraram <code>e6e9ab2</code>, com o título do PR e
+                  o número entre parênteses.
+                </p>
+
+                <span class="code-title">git log da main depois do squash</span>
+                <pre><code>e6e9ab2 Corrige queda do checkout ao informar cupom inválido (#3)
+8d3597a Configura CI, template de Pull Request e CODEOWNERS
+519ddb2 Adiciona cálculo de subtotal e aplicação de cupom
+cd28284 Cria estrutura inicial do projeto de exemplo</code></pre>
+
+                <p>
+                  A contrapartida é perder o detalhe. Se um dos commits tinha uma explicação valiosa
+                  no corpo da mensagem, ela só continua acessível pela página do PR. Por isso o
+                  título e a descrição importam tanto quando o time usa squash:
+                  <strong>eles são o que sobra</strong>.
+                </p>
+
+                <h3>Rebase and merge</h3>
+
+                <p>
+                  Os commits da branch são reaplicados um a um no topo da <code>main</code>, sem
+                  commit de junção. O histórico fica linear e preserva os commits individuais. Duas
+                  ressalvas documentadas pelo GitHub: os commits ganham identificadores novos (<em
+                    >não</em
+                  >
+                  são os mesmos objetos da sua branch local) e commits vazios são descartados
+                  <a class="cit" href="#ref-gh-2026d">(GITHUB, 2026d)</a>. É a estratégia preferida
+                  por times que cuidam do histórico com disciplina e fazem commits pequenos e
+                  autocontidos.
+                </p>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Estratégia</th>
+                        <th scope="col">Histórico</th>
+                        <th scope="col">Vantagem</th>
+                        <th scope="col">Desvantagem</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><b>Merge commit</b></td>
+                        <td>Ramificado, com ponto de junção</td>
+                        <td>Fiel ao que aconteceu; fácil reverter o conjunto</td>
+                        <td>Grafo poluído em repositórios movimentados</td>
+                      </tr>
+                      <tr>
+                        <td><b>Squash</b></td>
+                        <td>Linear, um commit por PR</td>
+                        <td>Log limpo e legível; <code>git bisect</code> mais direto</td>
+                        <td>Perde os passos intermediários</td>
+                      </tr>
+                      <tr>
+                        <td><b>Rebase</b></td>
+                        <td>Linear, todos os commits</td>
+                        <td>Detalhe preservado sem commit extra</td>
+                        <td>Reescreve identificadores; exige commits bem feitos</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p>
+                  Depois do merge, o GitHub oferece <b>Delete branch</b>.
+                  <strong>Apagar é seguro</strong>: os commits já estão na <code>main</code> e a
+                  branch pode ser restaurada pela própria página do PR. Deixar branches mergeadas
+                  acumulando só torna a lista de branches inútil.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/32-merged.webp"
+                    alt="Pull Request com selo Merged, evento informando que o commit e6e9ab2 foi mergeado na main, e a caixa Pull request successfully merged and closed com o botão Delete branch."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>PR #3 depois do merge.</b> O selo roxo <b>Merged</b> substitui o <b>Open</b>,
+                    e a linha do tempo registra qual commit entrou na <code>main</code>.
+                    <span class="look"
+                      >Observe o botão <b>Revert</b>: ele cria um PR novo desfazendo a mudança — o
+                      caminho recomendado quando algo dá errado em produção, porque mantém o
+                      histórico íntegro.</span
+                    >
+                  </figcaption>
+                </figure>
+              </section>
+
+              <section id="conflitos">
+                <h2><span class="num">Seção 14</span>Merge conflicts</h2>
+
+                <p>
+                  Um conflito acontece quando o Git não consegue decidir sozinho como combinar duas
+                  mudanças. O caso clássico é duas branches editando as mesmas linhas do mesmo
+                  arquivo; também conta uma branch alterando um arquivo que a outra apagou
+                  <a class="cit" href="#ref-gh-2026b">(GITHUB, 2026b)</a>.
+                  <strong>Não é erro de ninguém</strong>: é o resultado normal de duas pessoas
+                  trabalharem em paralelo sobre o mesmo código.
+                </p>
+
+                <p>
+                  No repositório de exemplo, o PR #7 propõe uma solução alternativa para a mesma
+                  issue #1 que o PR #3 já resolveu. Como ele saiu de uma <code>main</code> anterior
+                  ao merge e reescreveu exatamente as mesmas linhas, o GitHub não consegue integrar:
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/36-conflict-merge-box.webp"
+                    alt="Caixa de status do Pull Request informando que a branch tem conflitos que precisam ser resolvidos, com o botão Resolve conflicts e o botão de merge desabilitado."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Um PR com conflito.</b> O botão de merge fica desabilitado e o GitHub explica
+                    qual arquivo conflita.
+                    <span class="look"
+                      >Observe que o PR continua aberto e revisável — conflito impede o merge, não a
+                      discussão.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  Quando o conflito é simples, dá para resolver no próprio navegador. O editor
+                  mostra o arquivo com os marcadores que o Git insere:
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/37-conflict-editor.webp"
+                    alt="Editor de conflitos do GitHub mostrando o arquivo cupom.js com os marcadores de conflito e os atalhos Accept current change, Accept incoming change e Accept both changes."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>O editor de conflitos do GitHub.</b> As duas versões aparecem separadas pelos
+                    marcadores, com atalhos para aceitar uma, outra ou as duas.
+                    <span class="look"
+                      >Observe que aceitar um dos lados é só o começo: aqui, ficar com a versão da
+                      <code>main</code> significa descartar o <code>CupomInvalidoError</code>, que
+                      era o ponto do PR. Resolver conflito é uma decisão de projeto, não uma escolha
+                      mecânica.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <span class="code-title">Os marcadores, em texto</span>
+                <pre><code><span class="del">&lt;&lt;&lt;&lt;&lt;&lt;&lt; fix/erro-explicito-cupom (Current change)</span>
+  if (cupom === undefined) {
+    throw new CupomInvalidoError(codigo);
+<span class="cmt">=======</span>
+  if (!cupom || !estaValido(cupom, hoje)) {
+    return subtotal;
+<span class="add">&gt;&gt;&gt;&gt;&gt;&gt;&gt; main (Incoming change)</span></code></pre>
+
+                <p>
+                  Entre <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> e <code>=======</code> está a sua
+                  versão; entre <code>=======</code> e <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>, a
+                  da branch de destino. Resolver significa deixar no arquivo o código final desejado
+                  e apagar os três marcadores — inclusive quando a resposta certa é uma terceira
+                  versão, diferente das duas.
+                </p>
+
+                <p>
+                  Conflitos que envolvem vários arquivos ou exigem rodar os testes se resolvem
+                  melhor na máquina:
+                </p>
+
+                <span class="code-title">Terminal</span>
+                <pre><code>git switch fix/erro-explicito-cupom
+git fetch origin
+git merge origin/main        <span class="cmt"># aqui o Git aponta os conflitos</span>
+
+<span class="cmt"># edite os arquivos, resolva os marcadores e rode os testes</span>
+npm test
+
+git add src/cupom.js
+git commit                   <span class="cmt"># a mensagem de merge já vem preenchida</span>
+git push</code></pre>
+
+                <div role="note" class="note note--good">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-boa" />
+                    </svg>
+                    Boa prática
+                  </p>
+                  <p>
+                    <strong
+                      >A melhor forma de lidar com conflitos é encurtar a janela em que eles podem
+                      nascer:</strong
+                    >
+                    PRs pequenos, revisados rápido e mergeados no mesmo dia raramente conflitam.
+                    Quando um PR precisa viver mais tempo, traga a <code>main</code> para dentro
+                    dele com frequência (<code>git merge origin/main</code> ou o botão
+                    <b>Update branch</b> na própria página) em vez de descobrir tudo de uma vez no
+                    final.
+                  </p>
+                </div>
+
+                <div role="note" class="note note--warn">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-atencao" />
+                    </svg>
+                    Atenção
+                  </p>
+                  <p>
+                    <strong>Nem todo problema de integração aparece como conflito.</strong> No
+                    repositório de exemplo, o PR #5 adiciona um <code>console.warn</code> que lê
+                    <code>cupom.percentual</code> — o Git mesclou sem reclamar, porque as linhas não
+                    colidiam, mas o código resultante volta a quebrar com cupom inexistente. Quem
+                    pegou isso foi o CI, não o merge. É exatamente para esse tipo de caso que servem
+                    os checks automatizados.
+                  </p>
+                </div>
+              </section>
+              <section id="ci">
+                <h2><span class="num">Seção 15</span>Checks, CI/CD e Pull Requests</h2>
+
+                <p>
+                  <strong
+                    >Uma parte grande do que se verifica em um PR não precisa de gente.</strong
+                  >
+                  Compilar, rodar testes, checar formatação, verificar tipos, procurar dependência
+                  vulnerável — tudo isso é trabalho mecânico, repetitivo e que uma máquina faz
+                  melhor. É o papel da integração contínua: a cada push, um servidor baixa o código,
+                  executa um conjunto de verificações e devolve o resultado para dentro do Pull
+                  Request.
+                </p>
+
+                <p>
+                  No GitHub, a ferramenta nativa para isso é o <b>GitHub Actions</b>. Um arquivo
+                  YAML dentro de <code>.github/workflows/</code> descreve quando rodar e o que rodar
+                  <a class="cit" href="#ref-gh-2026l">(GITHUB, 2026l)</a>. O repositório de exemplo
+                  tem um workflow pequeno com dois jobs:
+                </p>
+
+                <span class="code-title">.github/workflows/ci.yml</span>
+                <pre><code>name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  testes:
+    name: Testes automatizados
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Rodar a suíte de testes
+        run: npm test
+
+  lint:
+    name: Análise estática
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Verificar sintaxe dos módulos
+        run: |
+          for arquivo in $(find src test -name '*.js'); do
+            node --check "$arquivo"
+          done</code></pre>
+
+                <p>
+                  O gatilho <code>pull_request</code> faz o workflow rodar a cada push em qualquer
+                  branch que tenha um PR aberto. Cada job vira um <b>check</b> no PR, identificado
+                  pelo nome definido no YAML — "Testes automatizados" e "Análise estática", no nosso
+                  caso.
+                </p>
+
+                <ol class="flowsteps">
+                  <li><b>push</b></li>
+                  <li><b>PR atualizado</b></li>
+                  <li class="is-auto"><b>CI executa</b></li>
+                  <li class="is-auto"><b>checks reportam</b></li>
+                  <li class="is-key"><b>review</b></li>
+                  <li><b>aprovação</b></li>
+                  <li><b>merge</b></li>
+                </ol>
+
+                <p>
+                  O resultado aparece na caixa de status, logo acima do botão de merge. Verde quando
+                  tudo passou; vermelho com o nome do job que falhou quando algo quebrou.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/12-merge-box-ok.webp"
+                    alt="Caixa de status do Pull Request com All checks have passed, dois checks bem-sucedidos, No conflicts with base branch e o botão verde Merge pull request."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Tudo verde no PR #3.</b> Duas condições precisam estar satisfeitas para o
+                    botão de merge ficar disponível: checks passando e ausência de conflito.
+                    <span class="look"
+                      >Observe que os checks aparecem resumidos ("2 successful checks") e a seta à
+                      direita expande a lista com o resultado de cada um.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/33-checks-failing.webp"
+                    alt="Caixa de status do Pull Request indicando Some checks were not successful, com o job Testes automatizados marcado como falho e o job Análise estática marcado como bem-sucedido."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Um check falhando no PR #5.</b> A mudança daquele PR mesclou sem conflito,
+                    mas voltou a quebrar o caso do cupom inexistente — o teste pegou.
+                    <span class="look"
+                      >Observe que os checks estão agrupados por resultado — "1 failing check" e "1
+                      successful check" — e que o nome de cada um é um link para o log completo da
+                      execução, onde está a linha exata em que a suíte falhou.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/28-actions-run.webp"
+                    alt="Página de execução do GitHub Actions mostrando os jobs Testes automatizados e Análise estática, com a lista de passos executados e o tempo de cada um."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>O detalhe da execução, na aba Actions.</b> Cada passo do job pode ser
+                    expandido para mostrar a saída do comando.
+                    <span class="look"
+                      >Observe o passo "Rodar a suíte de testes": é ele que executa o
+                      <code>npm test</code> definido no YAML. Quando um teste falha, é aqui que está
+                      a mensagem original.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  Vale distinguir dois termos que aparecem na documentação. <b>Checks</b> são
+                  criados por GitHub Apps e pelo Actions, com log, anotações no diff e capacidade de
+                  re-execução. <b>Commit statuses</b> são o mecanismo mais antigo e simples, usado
+                  por serviços externos, que apenas marcam um commit como sucesso ou falha. Na
+                  interface do PR, os dois aparecem juntos na mesma lista
+                  <a class="cit" href="#ref-gh-2026h">(GITHUB, 2026h)</a>.
+                </p>
+
+                <p>
+                  <strong>Por padrão, um check vermelho não impede o merge</strong> — ele só
+                  informa. Para que passe a impedir, ele precisa ser marcado como
+                  <b>obrigatório</b> nas regras do repositório, que é o assunto da próxima seção.
+                </p>
+
+                <div role="note" class="note note--bad">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-erro" />
+                    </svg>
+                    Erro comum
+                  </p>
+                  <p>
+                    Reexecutar o check até ele passar sem investigar por quê. Teste que falha às
+                    vezes ("flaky") é um problema real do projeto, não um contratempo; ignorar é
+                    ensinar o time a desconfiar do CI, e
+                    <strong>um CI em que ninguém confia não protege nada</strong>.
+                  </p>
+                </div>
+              </section>
+
+              <section id="protecoes">
+                <h2><span class="num">Seção 16</span>Branch protection e Rulesets</h2>
+
+                <p>
+                  <strong>Nada do que foi descrito até aqui é obrigatório por padrão.</strong> Em um
+                  repositório recém-criado, qualquer pessoa com acesso de escrita pode dar
+                  <code>git push</code> direto na <code>main</code> e pular o processo inteiro.
+                </p>
+
+                <p class="pull">
+                  Proteção de branch é o combinado da equipe transformado em algo que a plataforma
+                  cobra.
+                </p>
+
+                <p>
+                  O GitHub tem hoje dois mecanismos para isso, e
+                  <strong>os dois continuam funcionando</strong>. As
+                  <b>branch protection rules</b> são o modelo clássico: uma regra por padrão de
+                  branch, visível apenas para quem administra. Os <b>rulesets</b> são o modelo mais
+                  novo e mais flexível: podem ser empilhados (várias regras valendo sobre a mesma
+                  branch, sempre prevalecendo a mais restritiva), podem ser ligados e desligados sem
+                  serem apagados, e são visíveis para qualquer pessoa com acesso ao repositório — o
+                  que ajuda quem está começando a entender por que o merge está bloqueado
+                  <a class="cit" href="#ref-gh-2026c">(GITHUB, 2026c)</a>,
+                  <a class="cit" href="#ref-gh-2026g">(2026g)</a>.
+                </p>
+
+                <p>
+                  Em <b>Settings → Rules → Rulesets</b>, um ruleset define três coisas: quais
+                  branches ele atinge, em que modo está (ativo, desativado ou apenas avaliando) e
+                  quais regras aplica.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/38-rules-list.webp"
+                    alt="Tela Settings, seção Rulesets, listando o ruleset Proteção da main com quatro regras de branch."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Onde as regras ficam.</b> <b>Settings → Rules → Rulesets</b> lista os
+                    rulesets do repositório, com o resumo de cada um: aqui, quatro regras valendo
+                    sobre uma branch.
+                    <span class="look"
+                      >Observe que essa tela é legível por qualquer pessoa com acesso ao repositório
+                      — uma das diferenças em relação às branch protection rules clássicas, visíveis
+                      só para quem administra.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/39-ruleset-form.webp"
+                    alt="Tela de configuração de um ruleset chamado Proteção da main, com status Active, alvo Default branch e a lista de regras, entre elas Require a pull request before merging e Require status checks to pass marcadas."
+                    loading="lazy"
+                    width="2880"
+                    height="4266"
+                  />
+                  <figcaption>
+                    <b>O ruleset do repositório de exemplo.</b> Alvo: a branch padrão. Status:
+                    <b>Active</b>. Regras marcadas: exigir Pull Request antes do merge, exigir
+                    status checks, impedir exclusão e bloquear force push.
+                    <span class="look"
+                      >Observe a <b>Bypass list</b>, no topo: é onde se define quem pode furar a
+                      fila (uma equipe de plantão, um bot de release). Deixá-la vazia significa que
+                      a regra vale para todo mundo, inclusive para quem administra o
+                      repositório.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  As regras que mais aparecem no dia a dia de uma equipe são estas
+                  <a class="cit" href="#ref-gh-2026i">(GITHUB, 2026i)</a>:
+                </p>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Regra</th>
+                        <th scope="col">O que passa a acontecer</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><b>Require a pull request before merging</b></td>
+                        <td>
+                          Push direto na branch protegida é recusado. Toda mudança passa por um PR.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Required approvals</b></td>
+                        <td>
+                          Define o número mínimo de aprovações. Uma costuma bastar; times maiores ou
+                          código crítico às vezes exigem duas.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Dismiss stale reviews</b></td>
+                        <td>
+                          Cada push novo invalida as aprovações anteriores, forçando nova revisão do
+                          que mudou.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Require review from Code Owners</b></td>
+                        <td>
+                          Exige aprovação de quem é dono dos arquivos tocados, conforme o
+                          <a href="#codeowners">CODEOWNERS</a>.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Require conversation resolution</b></td>
+                        <td>Bloqueia o merge enquanto houver thread de revisão não resolvida.</td>
+                      </tr>
+                      <tr>
+                        <td><b>Require status checks to pass</b></td>
+                        <td>Escolhe quais checks são obrigatórios. Falhou, não mergeia.</td>
+                      </tr>
+                      <tr>
+                        <td><b>Require branches to be up to date</b></td>
+                        <td>
+                          Obriga a branch a incorporar a base antes do merge, para que o CI teste a
+                          combinação real.
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Block force pushes</b></td>
+                        <td>Impede reescrita de histórico na branch protegida.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p>
+                  O efeito no PR é imediato e explícito. Depois de ativar o ruleset no repositório
+                  de exemplo, o PR #5 passou a mostrar exatamente o que falta:
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/40-merge-blocked.webp"
+                    alt="Caixa de status mostrando checks marcados como Required, o aviso de branch desatualizada com o botão Update branch, a mensagem Merging is blocked porque falta uma aprovação, e o botão de merge desabilitado."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>Um merge bloqueado por regra.</b> Três coisas mudaram em relação à mesma tela
+                    antes do ruleset.
+                    <span class="look"
+                      >Observe: as etiquetas <b>Required</b> ao lado de cada check; o aviso
+                      <b>This branch is out-of-date with the base branch</b> com o botão
+                      <b>Update branch</b>, efeito da exigência de branch atualizada; e a mensagem
+                      <b
+                        >Merging is blocked — At least 1 approving review is required by reviewers
+                        with write access</b
+                      >. O botão de merge está desabilitado.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <div role="note" class="note note--market">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-mercado" />
+                    </svg>
+                    No mercado
+                  </p>
+                  <p>
+                    <strong
+                      >É por isso que, na empresa, você não vai conseguir "só empurrar rapidinho na
+                      main".</strong
+                    >
+                    A proteção é o que garante que todo código em produção passou por revisão e por
+                    testes, e é também o que torna auditável responder "quem aprovou esta mudança?"
+                    — pergunta rotineira em setores regulados. Quando há uma emergência real, o
+                    caminho é a bypass list ou uma exceção registrada, não desligar a regra.
+                  </p>
+                </div>
+              </section>
+
+              <section id="codeowners">
+                <h2><span class="num">Seção 17</span>CODEOWNERS</h2>
+
+                <p>
+                  Em um repositório com trinta pessoas e duzentos diretórios, ninguém sabe de cabeça
+                  quem precisa revisar o quê. O arquivo <code>CODEOWNERS</code> resolve isso: ele
+                  associa padrões de arquivo a pessoas ou times, e o GitHub passa a solicitar a
+                  revisão automaticamente quando um PR toca esses arquivos.
+                </p>
+
+                <p>
+                  O arquivo pode ficar em <code>.github/</code>, na raiz do repositório ou em
+                  <code>docs/</code> — o GitHub procura nessa ordem e usa o primeiro que encontrar
+                  <a class="cit" href="#ref-gh-2026a">(GITHUB, 2026a)</a>. A sintaxe lembra a do
+                  <code>.gitignore</code>, com o dono listado na mesma linha do padrão:
+                </p>
+
+                <span class="code-title">.github/CODEOWNERS</span>
+                <pre><code><span class="cmt"># Dono padrão de tudo que não tiver regra mais específica</span>
+*                       @AffonsoPaulo
+
+<span class="cmt"># Regras de negócio do carrinho</span>
+/src/                   @AffonsoPaulo
+
+<span class="cmt"># Pipeline e configuração de repositório</span>
+/.github/               @AffonsoPaulo</code></pre>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/44-codeowners.webp"
+                    alt="Arquivo CODEOWNERS aberto no GitHub, com a faixa verde informando que o arquivo é válido e as onze linhas do conteúdo."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>O arquivo aberto no GitHub.</b> A faixa verde no topo — "This CODEOWNERS file
+                    is valid" — é a validação automática da sintaxe.
+                    <span class="look"
+                      >Observe: quando há erro de padrão ou um dono sem acesso de escrita, essa
+                      mesma faixa aparece em vermelho apontando a linha problemática. Vale conferir
+                      depois de editar.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>Em um repositório de equipe, as linhas normalmente apontam para times:</p>
+
+                <pre><code>*                       @minha-org/plataforma
+*.tsx                   @minha-org/front-end
+/infra/                 @minha-org/sre
+/src/pagamentos/        @minha-org/pagamentos @ana-silva
+/docs/                  @minha-org/tech-writers</code></pre>
+
+                <p>
+                  A regra de precedência é a que mais confunde:
+                  <b>a última linha que casa com o arquivo é a que vale</b>. No exemplo acima, um
+                  arquivo <code>/src/pagamentos/cartao.tsx</code> não pertence ao time de front-end,
+                  apesar da extensão — a linha de pagamentos vem depois e sobrepõe. Por isso a
+                  convenção de escrever do mais genérico para o mais específico.
+                </p>
+
+                <p>
+                  Três detalhes que economizam tempo de depuração. O arquivo precisa existir na
+                  <b>branch de destino</b> do PR para valer — adicioná-lo na sua branch de feature
+                  não surte efeito naquele mesmo PR. Os donos listados precisam ter acesso de
+                  <b>escrita</b> ao repositório; quem não tem é silenciosamente ignorado. E
+                  <b>Pull Requests em rascunho não acionam</b> a solicitação automática: ela
+                  acontece quando o PR sai de draft.
+                </p>
+
+                <p>
+                  <strong>Sozinho, o CODEOWNERS apenas sugere reviewers.</strong> Combinado com a
+                  regra <i>Require review from Code Owners</i> da <a href="#protecoes">seção 16</a>,
+                  ele passa a ser obrigatório — e é essa combinação que garante que ninguém altere o
+                  módulo de cobrança sem que o time de cobrança olhe.
+                </p>
+              </section>
+
+              <section id="draft">
+                <h2><span class="num">Seção 18</span>Draft Pull Requests</h2>
+
+                <p>
+                  Um Draft Pull Request é um PR marcado explicitamente como incompleto. Ele mostra o
+                  diff, roda o CI e aceita comentários como qualquer outro, mas
+                  <strong>não pode ser mergeado</strong> e não solicita revisão dos code owners
+                  enquanto estiver nesse estado
+                  <a class="cit" href="#ref-gh-2026f">(GITHUB, 2026f)</a>.
+                </p>
+
+                <figure>
+                  <img
+                    src="/blog/pr-e-code-review/assets/images/35-draft-merge-box.webp"
+                    alt="Caixa de status de um Pull Request em rascunho, com a mensagem This pull request is still a work in progress, Draft pull requests cannot be merged, o botão Ready for review e o botão de merge desabilitado."
+                    loading="lazy"
+                    width="2880"
+                    height="2000"
+                  />
+                  <figcaption>
+                    <b>A caixa de status de um rascunho.</b> Os checks rodaram e passaram, não há
+                    conflito — e mesmo assim o merge está desabilitado, por escolha do autor.
+                    <span class="look"
+                      >Observe o botão <b>Ready for review</b>: é ele que promove o rascunho a PR
+                      normal e dispara os pedidos de revisão. O caminho inverso,
+                      <b>Convert to draft</b>, fica no canto direito da página.</span
+                    >
+                  </figcaption>
+                </figure>
+
+                <p>
+                  O uso mais comum é pedir opinião cedo, quando a decisão de arquitetura ainda dá
+                  para mudar. Abrir um rascunho com o esqueleto da solução e escrever na descrição
+                  "ainda falta X e Y; queria opinião sobre a abordagem antes de continuar" é
+                  <strong
+                    >muito mais barato do que descobrir, com o trabalho pronto, que o caminho era
+                    outro</strong
+                  >. No repositório de exemplo, o PR #6 está assim: a normalização do código do
+                  cupom funciona, mas falta o teste e falta decidir se a normalização pertence a
+                  essa camada.
+                </p>
+
+                <p>
+                  O rascunho também serve para abrir o PR logo no começo da tarefa, apenas para que
+                  o time veja que aquilo está em andamento e o CI comece a rodar desde cedo — nesse
+                  caso ele funciona como um sinal de "estou trabalhando nisto", sem consumir a
+                  atenção de ninguém.
+                </p>
+
+                <div role="note" class="note note--tip">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-dica" />
+                    </svg>
+                    Dica
+                  </p>
+                  <p>
+                    <strong>Rascunho não substitui descrição.</strong> Um draft sem explicação do
+                    que falta e do que você quer que a pessoa olhe recebe o mesmo tratamento de um
+                    PR sem descrição: ninguém entra. Diga o que já está pronto, o que falta e qual
+                    pergunta você quer responder.
+                  </p>
+                </div>
+              </section>
+              <section id="tamanho">
+                <h2><span class="num">Seção 19</span>PR pequeno vs. PR gigante</h2>
+
+                <p>
+                  Poucas variáveis afetam tanto a qualidade de uma revisão quanto o tamanho do diff.
+                  A razão é simples e não tem a ver com preguiça.
+                </p>
+
+                <p class="pull">Atenção não escala linearmente.</p>
+
+                <p>
+                  O guia de code review do Google trata isso como número: cem linhas é um tamanho
+                  razoável para uma mudança e mil linhas já é grande demais, com a ressalva de que a
+                  contagem de arquivos pesa tanto quanto a de linhas — duzentas linhas em um arquivo
+                  podem estar de bom tamanho, as mesmas duzentas espalhadas por cinquenta arquivos
+                  normalmente não <a class="cit" href="#ref-google-2026b">(GOOGLE, 2026b)</a>. O
+                  motivo que o guia dá é prático: é mais fácil achar cinco minutos várias vezes para
+                  revisar mudanças pequenas do que reservar meia hora seguida para uma grande.
+                  Quando esse tempo não aparece, o que sai é
+                  <strong>uma leitura superficial terminada em "LGTM"</strong>.
+                </p>
+
+                <div class="compare">
+                  <div class="compare__good">
+                    <h4>PR A — focado</h4>
+                    <ul>
+                      <li>180 linhas alteradas</li>
+                      <li>uma responsabilidade: corrigir o cálculo de desconto</li>
+                      <li>3 arquivos, sendo um de teste</li>
+                      <li>contexto claro na descrição</li>
+                    </ul>
+                    <p class="compare__note">
+                      Revisável em uma sentada. Se algo quebrar depois do deploy, é óbvio o que
+                      reverter.
+                    </p>
+                  </div>
+                  <div class="compare__bad">
+                    <h4>PR B — tudo junto</h4>
+                    <ul>
+                      <li>4.800 linhas alteradas</li>
+                      <li>refatoração + feature nova</li>
+                      <li>migração de banco</li>
+                      <li>reformatação automática do projeto inteiro</li>
+                      <li>atualização de dependências</li>
+                    </ul>
+                    <p class="compare__note">
+                      A mudança de verdade está escondida em meio a milhares de linhas mecânicas.
+                      Reverter significa desfazer cinco coisas não relacionadas.
+                    </p>
+                  </div>
+                </div>
+
+                <p>
+                  O problema do PR B não é o número em si — <strong>é a mistura</strong>. Um PR de
+                  2.000 linhas que só renomeia um método em quarenta arquivos é fácil de revisar,
+                  porque o padrão se repete. O que mata a revisão é ter cinco tipos de mudança no
+                  mesmo diff, obrigando quem lê a trocar de modo mental a cada arquivo e a nunca
+                  saber se aquela linha diferente é parte da feature ou efeito colateral da
+                  formatação.
+                </p>
+
+                <p>
+                  <strong>A regra prática é "uma responsabilidade por PR".</strong> Se a feature
+                  exige uma refatoração antes, faça a refatoração em um PR próprio, sem mudança de
+                  comportamento, e a feature em outro — é recomendação explícita do mesmo guia, que
+                  orienta separar refatoração de mudança de comportamento
+                  <a class="cit" href="#ref-google-2026b">(GOOGLE, 2026b)</a>. Além de revisável,
+                  isso deixa o histórico honesto: um commit que só move código e um commit que só
+                  muda comportamento contam coisas diferentes para quem investigar um bug daqui a um
+                  ano.
+                </p>
+
+                <div role="note" class="note note--good">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-boa" />
+                    </svg>
+                    Boa prática
+                  </p>
+                  <p>
+                    Quando um PR grande for inevitável — uma migração, um gerador de código — separe
+                    os commits por tipo de mudança e diga isso na descrição: "commits 1 e 2 são
+                    reformatação automática, o commit 3 é a mudança de verdade". A aba
+                    <b>Commits</b> passa a ser um roteiro de leitura, e quem revisa consegue dedicar
+                    a atenção onde ela importa.
+                  </p>
+                </div>
+              </section>
+
+              <section id="mercado">
+                <h2><span class="num">Seção 20</span>Como PRs são usados no mercado</h2>
+
+                <p>
+                  <strong>Não existe um processo universal.</strong> O que existe são configurações
+                  diferentes da mesma ideia, ajustadas ao tamanho do time, ao risco do produto e ao
+                  setor. Três recortes comuns:
+                </p>
+
+                <h3>Startup pequena</h3>
+
+                <ol class="flowsteps">
+                  <li><b>feature</b></li>
+                  <li class="is-key"><b>PR</b></li>
+                  <li><b>1 aprovação</b></li>
+                  <li><b>merge</b></li>
+                </ol>
+
+                <p>
+                  Cinco ou seis pessoas, todas conhecendo o sistema inteiro. A revisão é rápida e
+                  informal, muitas vezes acompanhada por uma conversa no chat. A proteção da
+                  <code>main</code> costuma exigir só uma aprovação e os testes passando. O risco
+                  aceito conscientemente é que decisões grandes passem com pouca discussão; a
+                  contrapartida é velocidade.
+                </p>
+
+                <h3>Empresa maior</h3>
+
+                <ol class="flowsteps">
+                  <li><b>ticket</b></li>
+                  <li><b>branch</b></li>
+                  <li class="is-key"><b>PR</b></li>
+                  <li class="is-auto"><b>CI</b></li>
+                  <li><b>CODEOWNER</b></li>
+                  <li><b>2 aprovações</b></li>
+                  <li class="is-auto"><b>checks de segurança</b></li>
+                  <li><b>merge</b></li>
+                </ol>
+
+                <p>
+                  O PR nasce de um ticket no Jira ou equivalente, e o número do ticket costuma estar
+                  no nome da branch e no título. O CODEOWNERS direciona a revisão para quem mantém
+                  cada área. Há mais checks: testes, lint, tipos, cobertura, análise de
+                  dependências, às vezes uma verificação de licenças. Também aparecem regras que só
+                  fazem sentido em escala, como exigir que a branch esteja atualizada com a
+                  <code>main</code> antes do merge — para que o CI teste a combinação que realmente
+                  vai para produção.
+                </p>
+
+                <h3>Projeto open source</h3>
+
+                <ol class="flowsteps">
+                  <li><b>fork</b></li>
+                  <li><b>branch</b></li>
+                  <li class="is-key"><b>PR para o repositório original</b></li>
+                  <li><b>revisão do mantenedor</b></li>
+                  <li><b>alterações</b></li>
+                  <li><b>merge</b></li>
+                </ol>
+
+                <p>
+                  <strong>Quem contribui normalmente não tem acesso de escrita</strong>, então o
+                  caminho é o <b>fork</b>: uma cópia do repositório na sua conta, onde você cria a
+                  branch e trabalha. O PR é aberto do seu fork para o repositório original — a tela
+                  de criação chama isso de <i>compare across forks</i>. A revisão tende a ser mais
+                  exigente com testes e documentação, porque o mantenedor vai conviver com aquele
+                  código sem ter o seu contexto, e o tempo de resposta varia de horas a meses. Ler o
+                  <code>CONTRIBUTING.md</code> antes de abrir o PR costuma ser
+                  <strong>a diferença entre ser revisado e ser ignorado</strong>.
+                </p>
+
+                <div role="note" class="note note--market">
+                  <p class="note__label">
+                    <svg
+                      class="note__icon"
+                      aria-hidden="true"
+                      focusable="false"
+                      width="15"
+                      height="15"
+                    >
+                      <use href="#i-mercado" />
+                    </svg>
+                    No mercado
+                  </p>
+                  <p>
+                    Em qualquer um dos três cenários, o que se espera de quem está começando é o
+                    mesmo: PRs pequenos, descrição honesta, resposta rápida aos comentários e
+                    nenhuma surpresa. Ninguém espera que você acerte a arquitetura de primeira;
+                    <strong>esperam que você facilite a vida de quem vai revisar</strong>.
+                  </p>
+                </div>
+              </section>
+
+              <section id="fluxo-completo">
+                <h2><span class="num">Seção 21</span>Fluxo completo de uma tarefa</h2>
+
+                <p>
+                  Juntando tudo, é assim que uma tarefa atravessa o processo — com os nomes que ela
+                  teria em uma empresa e o que está acontecendo por trás de cada etapa.
+                </p>
+
+                <ol class="stages">
+                  <li>
+                    <h4>Ticket #431 — "Adicionar avatar do usuário no perfil"</h4>
+                    <p>
+                      A tarefa chega com o problema descrito e algum critério de aceite. Se estiver
+                      vaga, o momento de perguntar é agora, não no meio da implementação.
+                    </p>
+                  </li>
+                  <li>
+                    <h4><code>git switch -c feat/431-user-avatar</code></h4>
+                    <p>
+                      Branch criada a partir de uma <code>main</code> atualizada. O número do ticket
+                      no nome liga o código à tarefa sem precisar de memória.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Implementação</h4>
+                    <p>
+                      O código e os testes crescem juntos. Testes escritos depois do PR aberto
+                      costumam ser
+                      <em>justificativas</em> do que já foi feito, em vez de
+                      <em>verificações</em> do que deveria acontecer.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Commits</h4>
+                    <p>
+                      Pequenos e com mensagem no imperativo, cada um deixando o projeto em um estado
+                      coerente. Isso é o que permite revisar por partes e reverter com precisão.
+                    </p>
+                  </li>
+                  <li>
+                    <h4><code>git push -u origin feat/431-user-avatar</code></h4>
+                    <p>
+                      A branch passa a existir no GitHub. Nada mudou para o resto do time ainda.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Abertura do Pull Request</h4>
+                    <p>
+                      Título explicando o efeito, descrição com contexto, o que mudou, como testar e
+                      riscos. Labels, reviewers e <code>Closes #431</code> na descrição.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>CI executa</h4>
+                    <p>
+                      Testes, lint, build e checagens de segurança rodam sobre a branch. Enquanto
+                      estiver vermelho,
+                      <strong
+                        >pedir revisão é gastar o tempo de outra pessoa com algo que a máquina já
+                        apontou</strong
+                      >.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Revisão</h4>
+                    <p>
+                      Comentários em linha, dúvidas, sugestões. Quem revisa distingue o que bloqueia
+                      do que é opcional; quem escreveu lê tudo antes de responder qualquer coisa.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Ajustes e nova rodada</h4>
+                    <p>
+                      Commits novos entram na mesma branch e atualizam o PR automaticamente. Cada
+                      thread recebe resposta; as encerradas são resolvidas; a revisão é solicitada
+                      de novo.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Aprovação</h4>
+                    <p>
+                      Com as exigências do repositório satisfeitas — número de aprovações, code
+                      owners, checks obrigatórios, conversas resolvidas — o botão de merge libera.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Merge</h4>
+                    <p>
+                      Na estratégia adotada pelo time. Com <i>squash</i>, o título do PR vira a
+                      mensagem do commit na <code>main</code> e a issue vinculada fecha sozinha.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Branch removida</h4>
+                    <p>
+                      O histórico já está na <code>main</code>. A branch pode ser restaurada pelo
+                      próprio PR se alguém precisar.
+                    </p>
+                  </li>
+                  <li>
+                    <h4>Deploy</h4>
+                    <p>
+                      Em times com entrega contínua, o merge na <code>main</code> dispara o pipeline
+                      de deploy. Em outros, a mudança entra na próxima release. Se algo der errado,
+                      o botão <b>Revert</b> do PR gera a correção em segundos.
+                    </p>
+                  </li>
+                </ol>
+              </section>
+              <section id="boas-praticas">
+                <h2><span class="num">Seção 22</span>Boas práticas</h2>
+
+                <p>
+                  A lista abaixo não é etiqueta:
+                  <strong>cada item resolve um problema concreto</strong> que aparece quando ele não
+                  é seguido.
+                </p>
+
+                <dl class="deflist">
+                  <div>
+                    <dt>PRs pequenos, com uma responsabilidade</dt>
+                    <dd>
+                      <strong
+                        >Revisão superficial é consequência de diff grande, não de desleixo.</strong
+                      >
+                      Quanto menor o PR, mais específicos os comentários e mais fácil reverter se
+                      algo quebrar <a class="cit" href="#ref-google-2026b">(GOOGLE, 2026b)</a>.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Título que descreve o efeito</dt>
+                    <dd>
+                      Com <i>squash</i>, ele vira a mensagem do commit na <code>main</code>. É o que
+                      vai aparecer no <code>git log</code>, no changelog e na busca de quem
+                      investigar um bug daqui a um ano.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Descrição com contexto, mudanças, teste e riscos</dt>
+                    <dd>
+                      Quem revisa não acompanhou sua semana. Cada pergunta que a descrição responde
+                      é uma ida e volta de horas que não acontece.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Commits compreensíveis</dt>
+                    <dd>
+                      Commits separados por intenção permitem revisar por etapas e usar
+                      <code>git bisect</code> de verdade. "wip" e "ajustes" tornam o histórico
+                      inútil para quem investiga.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Revisar o próprio diff antes de pedir revisão</dt>
+                    <dd>
+                      Boa parte dos comentários que você receberia — arquivo temporário,
+                      <code>console.log</code>, trecho comentado — você encontra sozinho na aba
+                      <b>Files changed</b>.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Testes junto com a mudança</dt>
+                    <dd>
+                      Teste escrito depois tende a confirmar o que o código faz, e não o que deveria
+                      fazer. Além disso, é o teste que impede que a correção volte a quebrar seis
+                      meses depois.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Não misturar refatoração não relacionada</dt>
+                    <dd>
+                      Renomear coisas no meio de uma feature esconde a mudança de verdade em meio a
+                      ruído e impede reverter uma sem desfazer a outra
+                      <a class="cit" href="#ref-google-2026b">(GOOGLE, 2026b)</a>.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Responder todos os comentários</dt>
+                    <dd>
+                      <strong>Silêncio é ambíguo:</strong> quem revisou não sabe se você concordou,
+                      discordou ou não viu — e thread sem resposta é PR parado sem motivo explícito.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Manter a branch atualizada quando necessário</dt>
+                    <dd>
+                      Em PRs que vivem mais de um ou dois dias, trazer a base para dentro com
+                      frequência evita descobrir um conflito grande no pior momento — e faz o CI
+                      testar a combinação real.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Não ignorar um check vermelho</dt>
+                    <dd>
+                      Reexecutar até passar transforma o CI em ruído. Se o teste é instável, isso é
+                      um problema do projeto e merece uma issue, não um clique em <i>re-run</i>.
+                    </dd>
+                  </div>
+                </dl>
+              </section>
+
+              <section id="erros-comuns">
+                <h2><span class="num">Seção 23</span>Erros comuns de quem está começando</h2>
+
+                <dl class="deflist">
+                  <div>
+                    <dt>Trabalhar direto na <code>main</code></dt>
+                    <dd>
+                      Funciona até o dia em que duas pessoas fazem isso ao mesmo tempo. Em
+                      repositórios protegidos, nem funciona: o push é recusado. Crie a branch antes
+                      do primeiro commit.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Abrir um PR gigante</dt>
+                    <dd>
+                      Duas semanas de trabalho em um diff só garante revisão superficial e merge
+                      demorado. Quebre em etapas que façam sentido sozinhas.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Título "update" e descrição vazia</dt>
+                    <dd>
+                      Empurra para quem revisa o trabalho de descobrir o que você fez. É a forma
+                      mais barata de garantir que seu PR fique por último na fila.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Pedir revisão de código que você não testou</dt>
+                    <dd>
+                      Rodar os testes antes de abrir o PR é barato. Descobrir pelo reviewer que a
+                      suíte está vermelha custa o tempo de duas pessoas.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Levar comentários para o lado pessoal</dt>
+                    <dd>
+                      Uma revisão com dez comentários geralmente significa que a pessoa leu com
+                      atenção. O objeto da conversa é o código, não você.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Aproveitar o PR para arrumar outras coisas</dt>
+                    <dd>
+                      "Já que eu estava aqui" é como um PR de 200 linhas vira um de 900. Anote e
+                      abra outro PR.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Resolver a conversa sem corrigir nem responder</dt>
+                    <dd>
+                      Fecha a thread e deixa o problema. Quem revisou percebe — e volta a abrir, com
+                      menos paciência.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Dar <b>Approve</b> sem revisar</dt>
+                    <dd>
+                      <strong>Aprovar por cortesia esvazia o processo inteiro</strong> e transfere
+                      para você parte da responsabilidade pelo que entrar. Se não teve tempo, diga
+                      isso; se revisou só uma parte, use <b>Comment</b> e explique o que olhou.
+                    </dd>
+                  </div>
+                </dl>
+              </section>
+
+              <section id="checklist-autor">
+                <h2><span class="num">Seção 24</span>Checklist do autor</h2>
+
+                <p>Uma passada rápida antes de clicar em <b>Create pull request</b>:</p>
+
+                <ul class="checklist">
+                  <li>
+                    Estou na branch certa, criada a partir de uma <code>main</code> atualizada
+                  </li>
+                  <li>O PR tem uma responsabilidade principal, não cinco</li>
+                  <li>Li o meu próprio diff, arquivo por arquivo</li>
+                  <li>O projeto compila e a suíte de testes passa localmente</li>
+                  <li>Adicionei ou atualizei testes para o comportamento novo</li>
+                  <li>O título explica o efeito da mudança, não o nome da branch</li>
+                  <li>A descrição tem contexto, o que mudou e por quê</li>
+                  <li>Escrevi como testar, em passos que outra pessoa consegue seguir</li>
+                  <li>Incluí screenshots ou exemplos quando a mudança é visível</li>
+                  <li>
+                    Não entrou nenhum arquivo acidental: log, configuração local, código comentado
+                  </li>
+                  <li>Marquei os reviewers certos e vinculei a issue com <code>Closes #</code></li>
+                </ul>
+              </section>
+
+              <section id="checklist-reviewer">
+                <h2><span class="num">Seção 25</span>Checklist do reviewer</h2>
+
+                <p>E antes de clicar em <b>Submit review</b>:</p>
+
+                <ul class="checklist">
+                  <li>Entendi qual problema este PR resolve</li>
+                  <li>A solução resolve esse problema, e não um parecido</li>
+                  <li>Verifiquei os casos de borda: nulo, vazio, limite, erro</li>
+                  <li>Consigo entender o código sem o autor ao lado</li>
+                  <li>Pensei em regressões: o que mais usa esse trecho?</li>
+                  <li>Os testes cobrem o comportamento novo, não só o caminho feliz</li>
+                  <li>Olhei implicações de segurança quando o contexto pede</li>
+                  <li>Deixei claro o que bloqueia e o que é sugestão opcional</li>
+                  <li>Cada comentário meu explica o motivo, não só o que mudar</li>
+                  <li>Se aprovei, foi porque revisei de verdade</li>
+                </ul>
+              </section>
+
+              <section id="glossario">
+                <h2><span class="num">Seção 26</span>Glossário</h2>
+
+                <dl class="deflist">
+                  <div>
+                    <dt>Repository (repositório)</dt>
+                    <dd>
+                      O projeto com todo o seu histórico. Existe em duas cópias: a local, na sua
+                      máquina, e a remota, no GitHub.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Branch</dt>
+                    <dd>
+                      Um ponteiro para um commit. Criar uma é barato e instantâneo, porque nada é
+                      copiado.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Commit</dt>
+                    <dd>
+                      Uma mudança registrada no histórico, com autor, mensagem e identificador
+                      (SHA).
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Diff</dt>
+                    <dd>
+                      A diferença entre duas versões do código, mostrada linha a linha com
+                      <code>+</code> e <code>-</code>.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Pull Request</dt>
+                    <dd>
+                      Proposta de integrar os commits de uma branch em outra, com discussão, revisão
+                      e checks. Existe no GitHub, não no Git.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Base / compare</dt>
+                    <dd>A branch de destino e a branch de origem de um PR.</dd>
+                  </div>
+                  <div>
+                    <dt>Reviewer</dt>
+                    <dd>
+                      Pessoa convidada a revisar um PR. Pode ser indicada manualmente ou
+                      automaticamente, via CODEOWNERS.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Approval</dt>
+                    <dd>
+                      Revisão enviada com o estado <b>Approve</b>, indicando que a mudança está
+                      pronta para entrar.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Merge</dt>
+                    <dd>A integração efetiva da branch de origem na de destino.</dd>
+                  </div>
+                  <div>
+                    <dt>Merge conflict</dt>
+                    <dd>
+                      Situação em que o Git não consegue combinar duas mudanças automaticamente e
+                      precisa de decisão humana.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>CI (integração contínua)</dt>
+                    <dd>Execução automática de testes e verificações a cada mudança proposta.</dd>
+                  </div>
+                  <div>
+                    <dt>Status check</dt>
+                    <dd>
+                      O resultado de uma verificação automatizada exibido no PR. Pode ser
+                      obrigatório ou apenas informativo.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>CODEOWNERS</dt>
+                    <dd>
+                      Arquivo que associa padrões de caminho a pessoas ou times, para solicitar
+                      revisão automaticamente.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Branch protection</dt>
+                    <dd>
+                      Regras clássicas que restringem o que pode ser feito em uma branch: exigir PR,
+                      aprovações, checks.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Ruleset</dt>
+                    <dd>
+                      Modelo mais recente de regras do GitHub, empilhável, com status próprio e
+                      visível para todo o time.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Draft PR</dt>
+                    <dd>
+                      Pull Request marcado como trabalho em andamento: não pode ser mergeado e não
+                      solicita revisão dos code owners.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Fork</dt>
+                    <dd>
+                      Cópia de um repositório na sua conta, usada para contribuir com projetos onde
+                      você não tem acesso de escrita.
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Squash</dt>
+                    <dd>
+                      Estratégia de merge que combina todos os commits do PR em um só na branch de
+                      destino.
+                    </dd>
+                  </div>
+                </dl>
+              </section>
+
+              <section id="referencias">
+                <h2><span class="num">Fontes</span>Referências</h2>
+
+                <p>
+                  Documentação consultada para escrever este guia, toda ela verificada em 17 de
+                  setembro de 2026. As citações no texto seguem a NBR 10520 e a lista abaixo, a NBR
+                  6023; como várias obras são do mesmo autor e do mesmo ano, elas aparecem
+                  diferenciadas por letra (<span class="cit">2026a</span>,
+                  <span class="cit">2026b</span>, e assim por diante). Cada citação no corpo do
+                  artigo é um link para a entrada correspondente.
+                </p>
+
+                <p>
+                  Vale separar dois tipos de afirmação. <strong>Como o GitHub se comporta</strong> —
+                  o que cada botão faz, o que uma regra exige, o que cada estratégia de merge produz
+                  — vem da documentação oficial e está citado no ponto em que aparece. Já as
+                  <strong>recomendações de prática</strong> — tamanho de PR, tom de comentário, o
+                  que responder, quando bloquear — são convenções de equipe: onde existe fonte
+                  pública que as sustente, ela está citada; no restante, o texto as apresenta como
+                  recomendação e não como dado. Os números de tamanho de mudança da
+                  <a href="#tamanho">seção 19</a>, por exemplo, são do guia de code review do
+                  Google, não estimativas deste artigo.
+                </p>
+
+                <ul class="refs">
+                  <li id="ref-affonso-2026">
+                    AFFONSO, Paulo. <b>pr-and-code-review</b>: projeto de exemplo do guia sobre Pull
+                    Requests e Code Review no GitHub. [<i>S. l.</i>], 2026. Disponível em:
+                    <a href="https://github.com/AffonsoPaulo/pr-and-code-review"
+                      >https://github.com/AffonsoPaulo/pr-and-code-review</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-chacon-2014">
+                    CHACON, Scott; STRAUB, Ben. <b>Pro Git</b>. 2. ed. Berkeley: Apress, 2014.
+                    Disponível em:
+                    <a href="https://git-scm.com/book/en/v2">https://git-scm.com/book/en/v2</a>.
+                    Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-git-2026">
+                    GIT. <b>git-request-pull</b>: generate a summary of pending changes. [<i
+                      >S. l.</i
+                    >], 2026. Disponível em:
+                    <a href="https://git-scm.com/docs/git-request-pull"
+                      >https://git-scm.com/docs/git-request-pull</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026a">
+                    GITHUB. <b>About code owners</b>. [<i>S. l.</i>], 2026a. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners"
+                      >https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026b">
+                    GITHUB. <b>About merge conflicts</b>. [<i>S. l.</i>], 2026b. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/about-merge-conflicts</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026c">
+                    GITHUB. <b>About protected branches</b>. [<i>S. l.</i>], 2026c. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches"
+                      >https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026d">
+                    GITHUB. <b>About pull request merges</b>. [<i>S. l.</i>], 2026d. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026e">
+                    GITHUB. <b>About pull request reviews</b>. [<i>S. l.</i>], 2026e. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/about-pull-request-reviews</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026f">
+                    GITHUB. <b>About pull requests</b>. [<i>S. l.</i>], 2026f. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026g">
+                    GITHUB. <b>About rulesets</b>. [<i>S. l.</i>], 2026g. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets"
+                      >https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026h">
+                    GITHUB. <b>About status checks</b>. [<i>S. l.</i>], 2026h. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026i">
+                    GITHUB. <b>Available rules for rulesets</b>. [<i>S. l.</i>], 2026i. Disponível
+                    em:
+                    <a
+                      href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets"
+                      >https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026j">
+                    GITHUB. <b>Creating a pull request</b>. [<i>S. l.</i>], 2026j. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026k">
+                    GITHUB. <b>Creating a pull request template for your repository</b>. [<i
+                      >S. l.</i
+                    >], 2026k. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository"
+                      >https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/creating-a-pull-request-template-for-your-repository</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026l">
+                    GITHUB. <b>GitHub Actions documentation</b>. [<i>S. l.</i>], 2026l. Disponível
+                    em:
+                    <a href="https://docs.github.com/en/actions"
+                      >https://docs.github.com/en/actions</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026m">
+                    GITHUB. <b>GitHub Skills</b>. [<i>S. l.</i>], 2026m. Disponível em:
+                    <a href="https://skills.github.com/">https://skills.github.com/</a>. Acesso em:
+                    17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026n">
+                    GITHUB. <b>Incorporating feedback in your pull request</b>. [<i>S. l.</i>],
+                    2026n. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/incorporating-feedback-in-your-pull-request"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/incorporating-feedback-in-your-pull-request</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026o">
+                    GITHUB. <b>Linking a pull request to an issue</b>. [<i>S. l.</i>], 2026o.
+                    Disponível em:
+                    <a
+                      href="https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue"
+                      >https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-gh-2026p">
+                    GITHUB. <b>Reviewing proposed changes in a pull request</b>. [<i>S. l.</i>],
+                    2026p. Disponível em:
+                    <a
+                      href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/reviewing-proposed-changes-in-a-pull-request"
+                      >https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/reviewing-proposed-changes-in-a-pull-request</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-google-2026a">
+                    GOOGLE. <b>How to handle reviewer comments</b>. [<i>S. l.</i>], 2026a.
+                    Disponível em:
+                    <a
+                      href="https://google.github.io/eng-practices/review/developer/handling-comments.html"
+                      >https://google.github.io/eng-practices/review/developer/handling-comments.html</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                  <li id="ref-google-2026b">
+                    GOOGLE. <b>Small CLs</b>. [<i>S. l.</i>], 2026b. Disponível em:
+                    <a href="https://google.github.io/eng-practices/review/developer/small-cls.html"
+                      >https://google.github.io/eng-practices/review/developer/small-cls.html</a
+                    >. Acesso em: 17 set. 2026.
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </div>
+
+          <footer class="colophon">
+            <p>
+              <b>Sobre o material.</b> O repositório
+              <a href="https://github.com/AffonsoPaulo/pr-and-code-review"
+                >AffonsoPaulo/pr-and-code-review</a
+              >
+              foi criado para este guia: as issues, os Pull Requests, os comentários de revisão, o
+              merge, o conflito e o ruleset descritos aqui existem de verdade e podem ser abertos.
+              Como autor e reviewer são a mesma conta, as opções <b>Approve</b> e
+              <b>Request changes</b> aparecem desabilitadas nas capturas da seção 8 — em um
+              repositório com mais de uma pessoa, elas estariam disponíveis. Todas as telas foram
+              capturadas na interface do GitHub em setembro de 2026.
+            </p>
+          </footer>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p><small>© 2026 paulo affonso</small></p>
+        <p><small>affonso.dev</small></p>
+      </div>
+    </footer>
+
+    <dialog class="lightbox" id="lightbox" aria-label="Captura de tela ampliada">
+      <img
+        alt=""
+        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+      />
+      <p></p>
+    </dialog>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Pull Requests e Code Review no GitHub",
+        "description": "Guia prático sobre Pull Requests e Code Review no GitHub, do primeiro commit ao merge, com telas reais da interface atual.",
+        "inLanguage": "pt-BR",
+        "datePublished": "2026-09-17",
+        "dateModified": "2026-09-17",
+        "author": { "@type": "Person", "name": "Paulo Affonso", "url": "https://affonso.dev/" },
+        "publisher": { "@type": "Person", "name": "Paulo Affonso" },
+        "mainEntityOfPage": "https://affonso.dev/blog/pr-e-code-review/"
+      }
+    </script>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // O índice fica aberto no desktop e recolhido em telas menores.
+        var toc = document.getElementById("indice");
+        var estreito = window.matchMedia("(max-width: 999px)");
+        function sincronizaToc() {
+          if (estreito.matches) {
+            toc.removeAttribute("open");
+          } else {
+            toc.setAttribute("open", "");
+          }
+        }
+        sincronizaToc();
+        estreito.addEventListener("change", sincronizaToc);
+
+        // Marca no índice a seção que está sendo lida.
+        var links = {};
+        Array.prototype.forEach.call(toc.querySelectorAll('a[href^="#"]'), function (a) {
+          links[a.getAttribute("href").slice(1)] = a;
+        });
+        var secoes = document.querySelectorAll(".prose > section[id]");
+        var atual = null;
+
+        if ("IntersectionObserver" in window) {
+          var visiveis = new Set();
+          var observador = new IntersectionObserver(
+            function (entradas) {
+              entradas.forEach(function (entrada) {
+                if (entrada.isIntersecting) {
+                  visiveis.add(entrada.target.id);
+                } else {
+                  visiveis.delete(entrada.target.id);
+                }
+              });
+              var primeira = null;
+              Array.prototype.forEach.call(secoes, function (s) {
+                if (!primeira && visiveis.has(s.id)) {
+                  primeira = s.id;
+                }
+              });
+              if (primeira && primeira !== atual) {
+                if (links[atual]) {
+                  links[atual].removeAttribute("aria-current");
+                }
+                atual = primeira;
+                links[atual].setAttribute("aria-current", "true");
+              }
+            },
+            { rootMargin: "-15% 0px -70% 0px" },
+          );
+          Array.prototype.forEach.call(secoes, function (s) {
+            observador.observe(s);
+          });
+        }
+
+        // Capturas abrem em tamanho cheio: os detalhes da interface são pequenos.
+        var dialogo = document.getElementById("lightbox");
+        var cheia = dialogo.querySelector("img");
+        var legenda = dialogo.querySelector("p");
+
+        document.addEventListener("click", function (evento) {
+          var img = evento.target.closest(".prose figure img");
+          if (img) {
+            cheia.src = img.currentSrc || img.src;
+            cheia.alt = img.alt;
+            var fig = img.closest("figure").querySelector("figcaption");
+            legenda.textContent = fig ? fig.textContent.replace(/\s+/g, " ").trim() : "";
+            if (typeof dialogo.showModal === "function") {
+              dialogo.showModal();
+            }
+            return;
+          }
+          if (evento.target === dialogo || evento.target === cheia) {
+            dialogo.close();
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
